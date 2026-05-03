@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LokalaBiltvättarna — Biltvätt i Malmö</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #111010;
+  --paper: #F5F0E8;
+  --cream: #EDE7D5;
+  --accent: #1A6B3C;
+  --accent-light: #2D9E5A;
+  --gold: #C8922A;
+  --water: #1B4F72;
+  --muted: #7A7060;
+  --error: #C0392B;
+  --card: #FFFFFF;
+  --border: rgba(0,0,0,0.10);
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #f7f7f7;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.logo-drop {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 50% 50% 50% 10%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 16px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex; gap: 32px;
+}
+
+nav ul a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+nav ul a:hover { color: var(--ink); }
+
+.nav-cta {
+  background: var(--accent);
+  color: white !important;
+  padding: 10px 22px;
+  border-radius: 999px;
+  transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--accent-light) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 48px 80px;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background: #ffffff;
+  z-index: 0;
+}
+
+.hero-blobs {
+  display: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.blob-1 { width: 500px; height: 500px; background: #A8D5B8; top: -100px; right: -100px; animation: drift 12s ease-in-out infinite alternate; }
+.blob-2 { width: 350px; height: 350px; background: #A8C4E0; bottom: -50px; left: 200px; animation: drift 9s ease-in-out infinite alternate-reverse; }
+.blob-3 { width: 250px; height: 250px; background: #E8D5A8; top: 40%; left: -80px; animation: drift 14s ease-in-out infinite alternate; }
+
+@keyframes drift {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.05); }
+}
+
+.hero-content {
+  position: relative; z-index: 1;
+  max-width: 680px;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 28px;
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.05;
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: #353535;
+  line-height: 1.7;
+  margin-bottom: 26px;
+  max-width: 560px;
+}
+
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 8px 24px rgba(26,107,60,0.3);
+}
+.btn-primary:hover {
+  background: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(26,107,60,0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.hero-points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 620px;
+}
+
+.hero-point {
+  border: 1px solid var(--border);
+  background: #f9f9f9;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  color: #333;
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 80px 48px;
+  background: #ffffff;
+}
+
+.section-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* ── PHONE BANNER ── */
+.phone-banner {
+  background: var(--accent);
+  color: white;
+  text-align: center;
+  padding: 28px 48px;
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  flex-wrap: wrap;
+}
+
+.phone-banner p {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.phone-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.phone-banner .phone-link {
+  color: white;
+  text-decoration: none;
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+}
+
+/* ── SERVICES ── */
+.services { background: #f2f2f2; }
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 56px;
+}
+
+.service-card {
+  background: var(--card);
+  border-radius: 4px;
+  padding: 36px 28px;
+  border: 1px solid var(--border);
+  transition: none;
+}
+
+.service-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.service-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.service-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem;
+  margin-bottom: 10px;
+}
+
+.service-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.service-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── SHOWCASE IMAGES ── */
+.showcase-images {
+  padding: 24px 48px 0;
+  background: #ffffff;
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.showcase-grid img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+}
+
+/* ── BOOKING SECTION ── */
+.booking { background: white; }
+
+.booking-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 64px;
+  margin-top: 56px;
+  align-items: start;
+}
+
+/* calendar */
+.cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cal-month {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+}
+
+.cal-nav {
+  background: none; border: 1px solid var(--border);
+  width: 34px; height: 34px; border-radius: 50%;
+  cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+
+.cal-nav:hover { background: var(--cream); }
+
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-day-label {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 8px 0;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid transparent;
+  color: var(--muted);
+}
+
+.cal-day.empty { cursor: default; }
+.cal-day.past { opacity: 0.3; cursor: default; }
+.cal-day.has-slots {
+  color: var(--ink);
+  background: #EBF5EE;
+  border-color: #C8E8D4;
+}
+.cal-day.has-slots:hover, .cal-day.selected {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.cal-legend {
+  display: flex; gap: 16px; margin-top: 12px;
+  font-size: 0.78rem; color: var(--muted);
+}
+
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  display: inline-block; margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* time slots */
+.time-slots-area {
+  margin-top: 24px;
+}
+
+.time-slots-title {
+  font-weight: 600; margin-bottom: 12px; font-size: 0.9rem;
+}
+
+.time-slots-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.time-slot-btn {
+  padding: 12px 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.time-slot-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: #EBF5EE;
+}
+
+.time-slot-btn.selected {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.time-slot-btn:disabled {
+  opacity: 0.4; cursor: not-allowed;
+  background: var(--cream);
+}
+
+.time-slot-btn .slot-time { font-weight: 600; font-size: 0.92rem; }
+.time-slot-btn .slot-avail { font-size: 0.72rem; color: inherit; opacity: 0.7; margin-top: 2px; }
+.time-slot-btn .slot-district { font-size: 0.72rem; color: inherit; opacity: 0.85; margin-top: 2px; }
+
+/* booking form */
+.booking-form {
+  background: var(--cream);
+  border-radius: var(--radius);
+  padding: 36px;
+  border: 1px solid var(--border);
+}
+
+.form-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 28px;
+}
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+}
+
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.selected-summary {
+  background: white;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--accent);
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.selected-summary.visible { display: block; }
+
+.form-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form-submit:hover { background: var(--accent-light); }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── TOAST / ALERTS ── */
+.toast-container {
+  position: fixed; bottom: 30px; right: 30px;
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 999;
+}
+
+.toast {
+  padding: 14px 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: slideIn 0.3s ease;
+  max-width: 340px;
+}
+
+.toast.success { background: var(--accent); }
+.toast.error { background: var(--error); }
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ── ADMIN PANEL ── */
+.admin-section { background: var(--ink); color: white; }
+
+.admin-section .section-tag { color: var(--gold); }
+.admin-section .section-title { color: white; }
+.admin-section .section-sub { color: rgba(255,255,255,0.55); }
+
+.admin-login {
+  max-width: 400px;
+  margin: 40px auto 0;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+  padding: 36px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-login label {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.admin-login input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.admin-login input:focus {
+  border-color: var(--gold);
+}
+
+.btn-gold {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-gold:hover { opacity: 0.85; }
+
+.admin-panel {
+  display: none;
+  margin-top: 40px;
+}
+
+.admin-panel.visible { display: block; }
+
+.admin-tabs {
+  display: flex; gap: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 4px;
+  width: fit-content;
+  margin-bottom: 32px;
+}
+
+.admin-tab {
+  padding: 10px 22px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-tab.active {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+.admin-pane { display: none; }
+.admin-pane.active { display: block; }
+
+/* slot manager */
+.slot-manager-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+}
+
+.slot-cal-small .cal-day { font-size: 0.78rem; }
+
+.slots-editor {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.slots-date-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.slot-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+
+.slot-row input[type="time"],
+.slot-row input[type="number"] {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: white;
+  padding: 8px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.slot-row input:focus {
+  border-color: var(--gold);
+}
+
+.slot-row label { color: rgba(255,255,255,0.6); font-size: 0.82rem; }
+
+.btn-remove-slot {
+  background: rgba(192,57,43,0.3);
+  border: 1px solid rgba(192,57,43,0.5);
+  color: #E74C3C;
+  border-radius: 8px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+
+.btn-remove-slot:hover { background: rgba(192,57,43,0.5); }
+
+.btn-add-slot {
+  background: rgba(200,146,42,0.15);
+  border: 1.5px dashed rgba(200,146,42,0.5);
+  color: var(--gold);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.btn-add-slot:hover { background: rgba(200,146,42,0.25); }
+
+/* bookings table */
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.bookings-table th {
+  text-align: left;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.bookings-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+}
+
+.bookings-table tr:last-child td { border-bottom: none; }
+
+.bookings-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+.btn-delete {
+  background: rgba(192,57,43,0.2);
+  border: 1px solid rgba(192,57,43,0.4);
+  color: #E74C3C;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-delete:hover { background: rgba(192,57,43,0.4); }
+
+.btn-csv {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px;
+  background: var(--gold);
+  color: white;
+  border-radius: 999px;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  margin-bottom: 20px;
+}
+
+.btn-csv:hover { opacity: 0.85; }
+
+/* ── GROUPED BOOKINGS ── */
+.date-group {
+  margin-bottom: 28px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.date-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: rgba(200,146,42,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+
+.date-group-header:hover { background: rgba(200,146,42,0.18); }
+
+.date-group-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-group-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.date-group-badge {
+  background: rgba(200,146,42,0.25);
+  color: var(--gold);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.date-group-toggle {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+}
+
+.date-group.collapsed .date-group-toggle { transform: rotate(-90deg); }
+.date-group.collapsed .date-group-body { display: none; }
+
+.date-group-body {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Timeline layout inside each date group */
+.booking-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-card {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: start;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
+}
+
+.booking-card:last-child { border-bottom: none; }
+.booking-card:hover { background: rgba(255,255,255,0.03); }
+
+.booking-card-time {
+  padding: 16px 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  min-width: 80px;
+}
+
+.booking-time-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.booking-district-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(26,107,60,0.3);
+  color: #6FC98E;
+  border-radius: 999px;
+  padding: 2px 7px;
+  letter-spacing: 0.03em;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.booking-card-info {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.booking-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+}
+
+.booking-card-sub {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.booking-card-sub span::before {
+  content: '';
+  margin-right: 4px;
+}
+
+.booking-service-tag {
+  display: inline-block;
+  background: rgba(26,107,60,0.25);
+  color: #6FC98E;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.booking-card-notes {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  font-style: italic;
+  margin-top: 3px;
+}
+
+.booking-card-id {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.2);
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+.booking-card-actions {
+  padding: 16px 16px 16px 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.bookings-summary-bar {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.bookings-summary-bar strong { color: white; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 32px 48px;
+  font-size: 0.85rem;
+}
+
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer strong { color: white; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  nav ul { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  section { padding: 70px 24px; }
+  .booking-layout { grid-template-columns: 1fr; }
+  .showcase-grid { grid-template-columns: 1fr; }
+  .hero-points { grid-template-columns: 1fr; }
+  .slot-manager-layout { grid-template-columns: 1fr; }
+}
+
+/* ── SCROLL FADE IN ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-drop">💧</div>
+    LokalaBiltvättarna
+  </a>
+  <ul>
+    <li><a href="#services">Tjänster</a></li>
+    <li><a href="#booking">Boka</a></li>
+    <li><a href="#admin" class="nav-cta">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Professionell biltvätt · Malmö</div>
+    <h1>Vi kommer till ditt område<br>och gör bilen <em>redo</em>.</h1>
+    <p class="hero-sub">LokalaBiltvättarna drivs av ett litet högstadie team från Malmö. Du ser direkt vilka tider vi är i ditt område, bokar på en minut och får en noggrann tvätt på plats.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn btn-primary">Boka tvätt →</a>
+      <a href="#services" class="btn btn-outline">Våra tjänster</a>
+    </div>
+    <div class="hero-points">
+      <div class="hero-point">✔ Områdesbaserade tider</div>
+      <div class="hero-point">✔ Handtvätt med noggrannhet</div>
+      <div class="hero-point">✔ Snabb bokning online</div>
+      <div class="hero-point">✔ Betala på plats</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHONE BANNER -->
+<div class="phone-banner">
+  <p>Frågor? Ring oss:</p>
+  <a href="tel:+46701234567" class="phone-link">📞 +46 70-123 45 67</a>
+  <p>Mån–Lör, 8:00 – 18:00</p>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <h2 class="section-title">Tjänster och priser</h2>
+  <p class="section-sub">Alla tvättar avslutas med en kontroll så att bilen lämnar oss i toppskick.</p>
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <h3>Express-tvätt</h3>
+      <p>Utförlig handtvätt utvändigt med avspolning och torkning.</p>
+      <div class="service-price">299 kr</div>
+    </div>
+    <div class="service-card fade-up">
+      <h3>Premium-tvätt</h3>
+      <p>Invändigt och utvändigt, djupdammsugning, rengöring av paneler och mattor samt vård av interiören.</p>
+      <div class="service-price">499 kr</div>
+    </div>
+    <div class="service-card fade-up">
+      <h3>Helrekond</h3>
+      <p>Vårt mest kompletta paket: utvändigt, invändigt, motorrum och polering.</p>
+      <div class="service-price">899 kr</div>
+    </div>
+  </div>
+</section>
+
+<section class="showcase-images">
+  <div class="showcase-grid">
+    <img src="/static/showcase/image1.png" alt="Biltvätt bild 1">
+    <img src="/static/showcase/image2.png" alt="Biltvätt bild 2">
+    <img src="/static/showcase/image3.png" alt="Biltvätt bild 3">
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+  <div class="section-tag">Resarvera Din Tid</div>
+  <h2 class="section-title">Boka en Biltvätt</h2>
+  <p class="section-sub">Boka tid från tillgängliga tider och distrikt. Betalning görs på plats via swish eller kontant.</p>
+
+  <div class="booking-layout">
+    <!-- Left: Calendar + time slots -->
+    <div>
+      <div id="booking-calendar"></div>
+
+      <div class="time-slots-area" id="time-slots-area" style="display:none;">
+        <div class="time-slots-title">Tillgängliga tider för <span id="selected-date-label"></span></div>
+        <div class="time-slots-grid" id="time-slots-grid"></div>
+      </div>
+
+      <div class="cal-legend" style="margin-top:16px;">
+        <span><span class="legend-dot" style="background:#2D9E5A;"></span>Available</span>
+        <span><span class="legend-dot" style="background:#ccc;"></span>No slots</span>
+        <span><span class="legend-dot" style="background:#1A6B3C;"></span>Selected</span>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div>
+      <div class="booking-form">
+        <div class="form-title">Din Information</div>
+        <div class="selected-summary" id="selected-summary">
+          📅 <span id="summary-text">Select a date and time to continue</span>
+        </div>
+        <div class="form-group">
+          <label>Namn</label>
+          <input type="text" id="f-name" placeholder="Erik Lindström">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer</label>
+          <input type="tel" id="f-phone" placeholder="+46 70-123 45 67">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="f-address" placeholder="Industrigatan 12, Malmö">
+        </div>
+        <div class="form-group">
+          <label>Service</label>
+          <select id="f-service">
+            <option value="">Välj en service…</option>
+            <option value="Express Wash">Express-tvätt — 299 kr</option>
+            <option value="Interior Detail">Premium-tvätt — 499 kr</option>
+            <option value="Full Detail">Helrekond — 899 kr</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <textarea id="f-notes" placeholder="e.g. SUV, har lite rost..."></textarea>
+        </div>
+        <button class="form-submit" id="submit-btn" onclick="submitBooking()">
+          Confirm Booking
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="admin-section" id="admin">
+  <div class="section-tag">Admin Access</div>
+  <h2 class="section-title">För Anställda</h2>
+  <p class="section-sub">Bestäm tillgängliga tider, se inkommande bokningar.</p>
+
+  <div class="admin-login" id="admin-login-form">
+    <label>Admin Password</label>
+    <input type="password" id="admin-pw" placeholder="Enter password…" onkeydown="if(event.key==='Enter') adminLogin()">
+    <button class="btn-gold" onclick="adminLogin()">Sign In →</button>
+  </div>
+
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('slots', this)">⏰ Lägg Till Tider</button>
+      <button class="admin-tab" onclick="switchAdminTab('bookings', this)">📋 Se Bokningar</button>
+    </div>
+
+    <!-- Slots pane -->
+    <div class="admin-pane active" id="pane-slots">
+      <div class="slot-manager-layout">
+        <div>
+          <div id="admin-calendar"></div>
+        </div>
+        <div class="slots-editor" id="slots-editor">
+          <div class="slots-date-title" id="admin-date-title">Välj ett datum för att redigera tider</div>
+          <div id="slot-rows"></div>
+          <button class="btn-add-slot" id="btn-add-slot" style="display:none;" onclick="addSlotRow()">+ Add Time Slot</button>
+          <br><br>
+          <button class="btn-gold" id="btn-save-slots" style="display:none;width:auto;padding:12px 28px;border-radius:999px;" onclick="saveSlots()">Save Slots</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookings pane -->
+    <div class="admin-pane" id="pane-bookings">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <span style="color:rgba(255,255,255,0.5); font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em;">Filter:</span>
+          <select id="bookings-filter-date" onchange="renderGroupedBookings()" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:white;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
+            <option value="">Alla datum</option>
+          </select>
+          <input id="bookings-search" oninput="renderGroupedBookings()" placeholder="Sök namn / telefon…" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:white;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;min-width:180px;" />
+        </div>
+        <a class="btn-csv" id="csv-download-link" href="#" onclick="downloadCSV(event)" style="margin-bottom:0;">⬇ Download CSV</a>
+      </div>
+      <div id="bookings-summary-bar" style="margin-bottom:20px;"></div>
+      <div id="bookings-grouped"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>LokalaBiltvättarna</strong> · Industrigatan 12, 211 46 Malmö · <a href="tel:+46701234567">+46 70-123 45 67</a></p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+const API = '';  // same origin
+let adminPw = '';
+let selectedDate = null;
+let selectedTime = null;
+let selectedDistrict = '';
+let currentCalMonth = null;  // for booking cal
+let adminCalMonth = null;    // for admin cal
+let adminSelectedDate = null;
+let slotsCache = {};         // all slots from server
+let adminEditSlots = [];     // slots being edited for adminSelectedDate
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// ── CALENDAR HELPERS ───────────────────────────────────────────────────────
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function buildCalendar(containerId, month, year, onDayClick, isAdmin=false) {
+  const container = document.getElementById(containerId);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  let html = `<div class="cal-header">
+    <button class="cal-nav" onclick="${isAdmin?'adminCalPrev':'calPrev'}()">‹</button>
+    <span class="cal-month">${MONTHS[month]} ${year}</span>
+    <button class="cal-nav" onclick="${isAdmin?'adminCalNext':'calNext'}()">›</button>
+  </div>
+  <div class="cal-grid">
+    ${DAYS.map(d=>`<div class="cal-day-label">${d}</div>`).join('')}`;
+
+  for (let i=0; i<firstDay; i++) html += `<div class="cal-day empty"></div>`;
+
+  for (let d=1; d<=daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const date = new Date(year, month, d);
+    const isPast = date < today;
+    const hasSlots = slotsCache[dateStr] && slotsCache[dateStr].length > 0;
+    let cls = 'cal-day';
+    if (isPast && !isAdmin) cls += ' past';
+    if (hasSlots) cls += ' has-slots';
+    if (dateStr === selectedDate && !isAdmin) cls += ' selected';
+    if (dateStr === adminSelectedDate && isAdmin) cls += ' selected';
+    const clickable = (!isPast || isAdmin) ? `onclick="${isAdmin?'adminDayClick':'dayClick'}('${dateStr}')"` : '';
+    html += `<div class="${cls}" data-date="${dateStr}" ${clickable}>${d}</div>`;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+// ── BOOKING CALENDAR ───────────────────────────────────────────────────────
+function initBookingCal() {
+  const now = new Date();
+  currentCalMonth = { month: now.getMonth(), year: now.getFullYear() };
+  buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+}
+
+function calPrev() {
+  const d = new Date(currentCalMonth.year, currentCalMonth.month - 1, 1);
+  currentCalMonth = { month: d.getMonth(), year: d.getFullYear() };
+  buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+}
+
+function calNext() {
+  const d = new Date(currentCalMonth.year, currentCalMonth.month + 1, 1);
+  currentCalMonth = { month: d.getMonth(), year: d.getFullYear() };
+  buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+}
+
+async function dayClick(dateStr) {
+  selectedDate = dateStr;
+  selectedTime = null;
+  selectedDistrict = '';
+  updateSummary();
+  buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+  await loadTimeSlots(dateStr);
+}
+
+async function loadTimeSlots(dateStr) {
+  const area = document.getElementById('time-slots-area');
+  const grid = document.getElementById('time-slots-grid');
+  document.getElementById('selected-date-label').textContent = dateStr;
+  area.style.display = 'block';
+  grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">Loading…</div>';
+
+  const res = await fetch(`/api/availability?date=${dateStr}`);
+  const slots = await res.json();
+
+  if (!slots.length) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">No slots available on this date.</div>';
+    return;
+  }
+
+  grid.innerHTML = slots.map(s => {
+    const avail = s.available > 0;
+    const district = (s.district || '').trim() || 'Ej angivet område';
+    return `<button class="time-slot-btn${selectedTime===s.time?' selected':''}"
+      ${avail ? `onclick="selectTime('${s.time}', '${encodeURIComponent(district)}')"` : 'disabled'}
+      title="${s.booked}/${s.capacity} booked">
+      <div class="slot-time">${s.time}</div>
+      <div class="slot-avail">${avail ? s.available+' platser kvar' : 'Fullbokad'}</div>
+      <div class="slot-district">${district}</div>
+    </button>`;
+  }).join('');
+}
+
+function selectTime(time, encodedDistrict) {
+  selectedTime = time;
+  selectedDistrict = decodeURIComponent(encodedDistrict || '');
+  updateSummary();
+  // Re-render slots to show selection
+  document.querySelectorAll('.time-slot-btn').forEach(b => {
+    b.classList.toggle('selected', b.querySelector('.slot-time').textContent === time);
+  });
+}
+
+function updateSummary() {
+  const s = document.getElementById('selected-summary');
+  const t = document.getElementById('summary-text');
+  if (selectedDate && selectedTime) {
+    s.classList.add('visible');
+    if (selectedDistrict) {
+      t.textContent = `${selectedDate} kl ${selectedTime} (${selectedDistrict})`;
+    } else {
+      t.textContent = `${selectedDate} kl ${selectedTime}`;
+    }
+  } else {
+    s.classList.remove('visible');
+  }
+}
+
+async function submitBooking() {
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const address = document.getElementById('f-address').value.trim();
+  const service = document.getElementById('f-service').value;
+  const notes = document.getElementById('f-notes').value.trim();
+
+  if (!selectedDate || !selectedTime) { toast('Please select a date and time.', 'error'); return; }
+  if (!name || !phone || !address || !service) { toast('Please fill in all required fields.', 'error'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Booking…';
+
+  try {
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, phone, address, service, date: selectedDate, time: selectedTime, notes })
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast(`✅ Booking confirmed! ID: ${data.booking_id}`);
+      document.getElementById('f-name').value='';
+      document.getElementById('f-phone').value='';
+      document.getElementById('f-address').value='';
+      document.getElementById('f-service').value='';
+      document.getElementById('f-notes').value='';
+      selectedDate = null; selectedTime = null; selectedDistrict = '';
+      updateSummary();
+      await loadSlots();
+      buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+      document.getElementById('time-slots-area').style.display='none';
+    } else {
+      toast(data.error || 'Booking failed.', 'error');
+    }
+  } catch(e) {
+    toast('Network error. Is the server running?', 'error');
+  }
+
+  btn.disabled = false; btn.textContent = 'Confirm Booking';
+}
+
+// ── ADMIN ──────────────────────────────────────────────────────────────────
+async function adminLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  if (!pw) { toast('Enter a password.', 'error'); return; }
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ admin_password: pw })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      toast(data.error || 'Invalid admin password.', 'error');
+      return;
+    }
+    adminPw = pw;
+    document.getElementById('admin-login-form').style.display = 'none';
+    document.getElementById('admin-panel').classList.add('visible');
+    initAdminCal();
+    loadAdminBookings();
+  } catch (e) {
+    toast('Could not verify admin password.', 'error');
+  }
+}
+
+function switchAdminTab(pane, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+pane).classList.add('active');
+  if (pane === 'bookings') loadAdminBookings();
+}
+
+// ── ADMIN CALENDAR ─────────────────────────────────────────────────────────
+function initAdminCal() {
+  const now = new Date();
+  adminCalMonth = { month: now.getMonth(), year: now.getFullYear() };
+  buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
+}
+
+function adminCalPrev() {
+  const d = new Date(adminCalMonth.year, adminCalMonth.month - 1, 1);
+  adminCalMonth = { month: d.getMonth(), year: d.getFullYear() };
+  buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
+}
+
+function adminCalNext() {
+  const d = new Date(adminCalMonth.year, adminCalMonth.month + 1, 1);
+  adminCalMonth = { month: d.getMonth(), year: d.getFullYear() };
+  buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
+}
+
+function adminDayClick(dateStr) {
+  adminSelectedDate = dateStr;
+  buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
+  renderSlotsEditor();
+}
+
+function renderSlotsEditor() {
+  if (!adminSelectedDate) return;
+  document.getElementById('admin-date-title').textContent = `Tider för ${adminSelectedDate}`;
+  document.getElementById('btn-add-slot').style.display = '';
+  document.getElementById('btn-save-slots').style.display = '';
+
+  adminEditSlots = JSON.parse(JSON.stringify(slotsCache[adminSelectedDate] || []));
+  renderSlotRows();
+}
+
+function renderSlotRows() {
+  const container = document.getElementById('slot-rows');
+  container.innerHTML = adminEditSlots.map((s, i) => `
+    <div class="slot-row" id="slot-row-${i}">
+      <input type="time" value="${s.time}" onchange="adminEditSlots[${i}].time=this.value">
+      <label>Capacity:</label>
+      <input type="number" min="1" max="20" value="${s.capacity}" style="width:70px;" onchange="adminEditSlots[${i}].capacity=parseInt(this.value)">
+      <label>Område:</label>
+      <input type="text" value="${s.district || ''}" placeholder="t.ex. Centrum" style="min-width:130px;" onchange="adminEditSlots[${i}].district=this.value.trim()">
+      <button class="btn-remove-slot" onclick="removeSlotRow(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function addSlotRow() {
+  adminEditSlots.push({ time: '09:00', capacity: 1, district: '' });
+  renderSlotRows();
+}
+
+function removeSlotRow(i) {
+  adminEditSlots.splice(i, 1);
+  renderSlotRows();
+}
+
+async function saveSlots() {
+  if (!adminSelectedDate) return;
+  const newSlots = JSON.parse(JSON.stringify(slotsCache));
+  newSlots[adminSelectedDate] = adminEditSlots
+    .filter(s => s.time && s.capacity)
+    .map(s => ({
+      time: s.time,
+      capacity: Math.max(1, parseInt(s.capacity, 10) || 1),
+      district: (s.district || '').trim()
+    }))
+    .sort((a, b) => a.time.localeCompare(b.time));
+
+  const res = await fetch('/api/slots', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ admin_password: adminPw, slots: newSlots })
+  });
+  const data = await res.json();
+  if (data.success) {
+    toast('Slots saved!');
+    await loadSlots();
+    buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
+    buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+  } else {
+    toast(data.error || 'Error saving slots.', 'error');
+  }
+}
+
+// ── ADMIN BOOKINGS ─────────────────────────────────────────────────────────
+let allBookings = [];
+
+async function loadAdminBookings() {
+  const container = document.getElementById('bookings-grouped');
+  container.innerHTML = '<div style="text-align:center;opacity:0.4;padding:48px 32px;">Laddar…</div>';
+  try {
+    const res = await fetch(`/api/bookings?admin_password=${encodeURIComponent(adminPw)}`);
+    allBookings = await res.json();
+    if (!Array.isArray(allBookings)) allBookings = [];
+    populateDateFilter();
+    renderGroupedBookings();
+  } catch(e) {
+    container.innerHTML = '<div style="text-align:center;color:#E74C3C;padding:48px 32px;">Kunde inte ladda bokningar.</div>';
+  }
+}
+
+function populateDateFilter() {
+  const sel = document.getElementById('bookings-filter-date');
+  const current = sel.value;
+  const dates = [...new Set(allBookings.map(b => b.date))].sort();
+  sel.innerHTML = '<option value="">Alla datum</option>' +
+    dates.map(d => `<option value="${d}"${d===current?' selected':''}>${formatDateLabel(d)}</option>`).join('');
+}
+
+function formatDateLabel(dateStr) {
+  // e.g. "2025-06-14" → "Lör 14 jun"
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('sv-SE', { weekday:'short', day:'numeric', month:'short' });
+  } catch { return dateStr; }
+}
+
+function renderGroupedBookings() {
+  const container = document.getElementById('bookings-grouped');
+  const summaryBar = document.getElementById('bookings-summary-bar');
+  const filterDate = document.getElementById('bookings-filter-date').value;
+  const search = (document.getElementById('bookings-search').value || '').toLowerCase().trim();
+
+  let filtered = allBookings.filter(b => {
+    if (filterDate && b.date !== filterDate) return false;
+    if (search) {
+      const haystack = `${b.name} ${b.phone} ${b.address} ${b.district} ${b.service}`.toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Summary bar
+  const totalCount = filtered.length;
+  const dateCount = new Set(filtered.map(b => b.date)).size;
+  summaryBar.innerHTML = totalCount === 0 ? '' : `
+    <div class="bookings-summary-bar">
+      <span>📋 <strong>${totalCount}</strong> bokning${totalCount !== 1 ? 'ar' : ''}</span>
+      <span>📅 <strong>${dateCount}</strong> datum</span>
+    </div>`;
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="text-align:center;opacity:0.4;padding:48px 32px;">' +
+      (allBookings.length ? 'Inga bokningar matchar filtret.' : 'Inga bokningar ännu.') + '</div>';
+    return;
+  }
+
+  // Group by date, sort dates ascending, then sort bookings within each date by time
+  const groups = {};
+  filtered.forEach(b => {
+    if (!groups[b.date]) groups[b.date] = [];
+    groups[b.date].push(b);
+  });
+  const sortedDates = Object.keys(groups).sort();
+  sortedDates.forEach(d => groups[d].sort((a,b) => a.time.localeCompare(b.time)));
+
+  const today = new Date().toISOString().slice(0,10);
+
+  container.innerHTML = sortedDates.map(date => {
+    const bookings = groups[date];
+    const label = formatDateLabel(date);
+    const isToday = date === today;
+    const isPast = date < today;
+
+    const cardsHtml = bookings.map(b => {
+      const district = (b.district || '').trim();
+      const safeId = b.id.replace(/'/g, "\\'");
+      return `
+        <div class="booking-card">
+          <div class="booking-card-time">
+            <span class="booking-time-label">${b.time}</span>
+            ${district ? `<span class="booking-district-pill" title="${district}">${district}</span>` : ''}
+          </div>
+          <div class="booking-card-info">
+            <div class="booking-card-name">${escHtml(b.name)}</div>
+            <div class="booking-card-sub">
+              <span>📞 ${escHtml(b.phone)}</span>
+              <span>📍 ${escHtml(b.address || '—')}</span>
+            </div>
+            <div class="booking-service-tag">${escHtml(b.service)}</div>
+            ${b.notes ? `<div class="booking-card-notes">"${escHtml(b.notes)}"</div>` : ''}
+            <div class="booking-card-id">${b.id}</div>
+          </div>
+          <div class="booking-card-actions">
+            <button class="btn-delete" onclick="deleteBooking('${safeId}')">Ta bort</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    const todayBadge = isToday ? ' <span style="background:rgba(26,107,60,0.4);color:#6FC98E;font-size:0.7rem;font-weight:700;border-radius:999px;padding:2px 8px;vertical-align:middle;">IDAG</span>' : '';
+    const pastStyle = isPast && !isToday ? 'opacity:0.6;' : '';
+
+    return `
+      <div class="date-group" id="dg-${date}" style="${pastStyle}">
+        <div class="date-group-header" onclick="toggleDateGroup('${date}')">
+          <div class="date-group-title">
+            📅 ${label}${todayBadge}
+          </div>
+          <div class="date-group-meta">
+            <span class="date-group-badge">${bookings.length} bokning${bookings.length !== 1 ? 'ar' : ''}</span>
+            <span>${bookings[0].time}–${bookings[bookings.length-1].time}</span>
+            <span class="date-group-toggle">▾</span>
+          </div>
+        </div>
+        <div class="date-group-body">
+          <div class="booking-timeline">${cardsHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleDateGroup(date) {
+  const el = document.getElementById('dg-' + date);
+  if (el) el.classList.toggle('collapsed');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Ta bort denna bokning?')) return;
+  const res = await fetch(`/api/bookings/${id}`, {
+    method: 'DELETE',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ admin_password: adminPw })
+  });
+  const data = await res.json();
+  if (data.success) {
+    toast('Bokning borttagen.');
+    allBookings = allBookings.filter(b => b.id !== id);
+    populateDateFilter();
+    renderGroupedBookings();
+    await loadSlots();
+  } else {
+    toast(data.error || 'Fel vid borttagning.', 'error');
+  }
+}
+
+function downloadCSV(e) {
+  e.preventDefault();
+  window.location.href = `/api/csv?admin_password=${encodeURIComponent(adminPw)}`;
+}
+
+// ── LOAD SLOTS ─────────────────────────────────────────────────────────────
+async function loadSlots() {
+  try {
+    const res = await fetch('/api/slots');
+    slotsCache = await res.json();
+  } catch(e) {
+    slotsCache = {};
+  }
+}
+
+// ── FADE IN ON SCROLL ─────────────────────────────────────────────────────
+function initFadeIn() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+(async function init() {
+  await loadSlots();
+  initBookingCal();
+  initFadeIn();
+})();
+</script>
+</body>
+</html>
