@@ -1,31 +1,37 @@
-# fly.toml — SparkWash deployment config
-# Run `fly launch` once to create the app, then `fly deploy` for updates.
+# fly.toml app configuration file generated for fly-lokalabiltvattarna on 2026-05-03T15:28:12Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "sparkwash"          # change to your actual app name after `fly launch`
-primary_region = "arn"     # Stockholm — closest to Malmö
+app = 'fly-lokalabiltvattarna'
+primary_region = 'ams'
 
 [build]
-  # No Dockerfile needed; Fly auto-detects Python via requirements.txt + Procfile
 
 [env]
-  PORT = "8080"
-  APP_DATA_DIR = "/data"   # points to the persistent volume below
+  APP_DATA_DIR = '/data'
+  PORT = '8080'
 
-# Persistent volume — your SQLite db and CSV live here and survive redeploys
 [[mounts]]
-  source      = "sparkwash_data"
-  destination = "/data"
+  source = 'sparkwash_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 8080
-  force_https   = true
-  auto_stop_machines  = true
+  force_https = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
-[[http_service.checks]]
-  interval = "30s"
-  timeout  = "5s"
-  grace_period = "10s"
-  method = "GET"
-  path   = "/"
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
