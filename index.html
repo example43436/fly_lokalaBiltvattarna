@@ -4,22 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LokalaBiltvättarna — Biltvätt i Malmö</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #111010;
-  --paper: #F5F0E8;
+  --ink: #0f0f0f;
+  --paper: #F7F4EE;
   --cream: #EDE7D5;
   --accent: #1A6B3C;
   --accent-light: #2D9E5A;
+  --accent-pale: #d6ede0;
   --gold: #C8922A;
-  --water: #1B4F72;
   --muted: #7A7060;
+  --muted-2: #aaa79e;
   --error: #C0392B;
   --card: #FFFFFF;
   --border: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.18);
   --shadow: 0 4px 24px rgba(0,0,0,0.08);
   --radius: 12px;
+  --line: 1px solid var(--border);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,8 +30,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: #f7f7f7;
+  font-family: 'Noto Sans JP', 'DM Sans', sans-serif;
+  background: var(--paper);
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
@@ -38,112 +41,136 @@ body {
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 48px;
-  background: #ffffff;
-  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  height: 60px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .nav-logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--ink);
   text-decoration: none;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 12px;
 }
 
-.logo-drop {
-  width: 34px; height: 34px;
-  background: var(--accent);
-  border-radius: 50% 50% 50% 10%;
+.logo-mark {
+  width: 28px; height: 28px;
+  border: 2px solid var(--accent);
   display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 16px;
+  font-size: 13px;
+  color: var(--accent);
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
+
+/* legacy class alias */
+.logo-drop { display: none; }
 
 nav ul {
   list-style: none;
-  display: flex; gap: 32px;
+  display: flex; gap: 0;
+  border-left: 1px solid var(--border);
 }
+
+nav ul li { border-right: 1px solid var(--border); }
 
 nav ul a {
+  display: block;
   text-decoration: none;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: color 0.2s;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 24px;
+  line-height: 60px;
+  transition: color 0.2s, background 0.2s;
 }
 
-nav ul a:hover { color: var(--ink); }
+nav ul a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
 
 .nav-cta {
-  background: var(--accent);
+  background: var(--accent) !important;
   color: white !important;
-  padding: 10px 22px;
-  border-radius: 999px;
-  transition: background 0.2s !important;
+  transition: opacity 0.2s !important;
 }
-.nav-cta:hover { background: var(--accent-light) !important; }
+.nav-cta:hover { opacity: 0.85 !important; background: var(--accent) !important; }
 
 /* ── HERO ── */
 .hero {
-  min-height: 100vh;
-  display: flex; align-items: center;
-  padding: 120px 48px 80px;
+  min-height: 100svh;
+  display: flex; align-items: stretch;
+  padding: 0;
   position: relative;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border-strong);
 }
 
-.hero-bg {
-  position: absolute; inset: 0;
-  background: #ffffff;
-  z-index: 0;
-}
+.hero-bg { display: none; }
+.hero-blobs { display: none; }
+.blob { display: none; }
 
-.hero-blobs {
-  display: none;
-}
-
-.blob {
+/* Decorative vertical rule */
+.hero::before {
+  content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
-}
-
-.blob-1 { width: 500px; height: 500px; background: #A8D5B8; top: -100px; right: -100px; animation: drift 12s ease-in-out infinite alternate; }
-.blob-2 { width: 350px; height: 350px; background: #A8C4E0; bottom: -50px; left: 200px; animation: drift 9s ease-in-out infinite alternate-reverse; }
-.blob-3 { width: 250px; height: 250px; background: #E8D5A8; top: 40%; left: -80px; animation: drift 14s ease-in-out infinite alternate; }
-
-@keyframes drift {
-  0% { transform: translate(0,0) scale(1); }
-  100% { transform: translate(30px, -20px) scale(1.05); }
+  left: 48px;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border-strong);
+  z-index: 0;
 }
 
 .hero-content {
   position: relative; z-index: 1;
-  max-width: 680px;
+  max-width: 100%;
+  padding: 100px 80px 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 }
 
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent);
-  color: white;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 999px;
-  margin-bottom: 28px;
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
 }
+
+.hero-eyebrow-line {
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero-eyebrow-text {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* hide old badge */
+.hero-badge { display: none !important; }
 
 .hero h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  line-height: 1.05;
-  margin-bottom: 24px;
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  font-weight: 500;
+  line-height: 1.12;
+  margin-bottom: 28px;
   color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
 .hero h1 em {
@@ -152,27 +179,33 @@ nav ul a:hover { color: var(--ink); }
 }
 
 .hero-sub {
-  font-size: 1.05rem;
-  color: #353535;
-  line-height: 1.7;
-  margin-bottom: 26px;
-  max-width: 560px;
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  line-height: 1.9;
+  margin-bottom: 40px;
+  max-width: 500px;
+  font-weight: 300;
+  letter-spacing: 0.01em;
 }
 
 .hero-actions {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  margin-bottom: 24px;
+  display: flex; gap: 0; flex-wrap: wrap;
+  margin-bottom: 48px;
+  border: 1px solid var(--border-strong);
+  width: fit-content;
 }
 
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
+  padding: 15px 32px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
   border: none;
+  border-radius: 0;
   transition: all 0.2s;
   text-decoration: none;
 }
@@ -180,170 +213,347 @@ nav ul a:hover { color: var(--ink); }
 .btn-primary {
   background: var(--accent);
   color: white;
-  box-shadow: 0 8px 24px rgba(26,107,60,0.3);
+  border-right: 1px solid rgba(255,255,255,0.2);
 }
 .btn-primary:hover {
-  background: var(--accent-light);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(26,107,60,0.35);
+  background: #155a32;
 }
 
 .btn-outline {
   background: transparent;
   color: var(--ink);
-  border: 2px solid var(--border);
+  border-left: 1px solid var(--border-strong);
 }
 .btn-outline:hover {
-  border-color: var(--ink);
-  transform: translateY(-2px);
+  background: rgba(0,0,0,0.04);
 }
 
-.hero-points {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  max-width: 620px;
+/* Stats row */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+  max-width: 520px;
 }
 
-.hero-point {
-  border: 1px solid var(--border);
-  background: #f9f9f9;
-  padding: 10px 12px;
-  font-size: 0.88rem;
-  color: #333;
+.hero-stat {
+  flex: 1;
+  padding-right: 28px;
+  border-right: 1px solid var(--border);
+  margin-right: 28px;
 }
+.hero-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+
+.hero-stat-num {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.hero-stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* hide old hero-points */
+.hero-points { display: none; }
 
 /* ── SECTIONS ── */
 section {
   padding: 80px 48px;
-  background: #ffffff;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
 }
 
 .section-tag {
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--accent);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-tag::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
 }
 
 .section-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.15;
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 500;
+  line-height: 1.2;
   color: var(--ink);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
 }
 
 .section-sub {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  max-width: 520px;
-  line-height: 1.7;
+  max-width: 480px;
+  line-height: 1.9;
+  font-weight: 300;
 }
 
 /* ── PHONE BANNER ── */
 .phone-banner {
-  background: var(--accent);
+  background: var(--ink);
   color: white;
   text-align: center;
-  padding: 28px 48px;
-  display: flex; align-items: center; justify-content: center; gap: 24px;
-  flex-wrap: wrap;
+  padding: 0 48px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .phone-banner p {
-  font-size: 1rem;
-  opacity: 0.85;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-right: 20px;
 }
 
-.phone-num {
-  font-family: 'DM Serif Display', serif;
-  font-size: 2rem;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
+.phone-num { display: none; }
 
 .phone-banner .phone-link {
   color: white;
   text-decoration: none;
-  font-family: 'DM Serif Display', serif;
-  font-size: 2rem;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-right: 32px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  padding-right: 32px;
+}
+
+.phone-hours {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.35;
 }
 
 /* ── SERVICES ── */
-.services { background: #f2f2f2; }
+.services {
+  background: var(--paper);
+  position: relative;
+}
+
+.services-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  gap: 24px;
+}
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin-top: 56px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--border-strong);
+  margin-top: 0;
 }
 
 .service-card {
-  background: var(--card);
-  border-radius: 4px;
-  padding: 36px 28px;
-  border: 1px solid var(--border);
-  transition: none;
+  background: white;
+  border-right: 1px solid var(--border-strong);
+  padding: 40px 36px;
+  position: relative;
+  transition: background 0.2s;
+  overflow: hidden;
+}
+.service-card:last-child { border-right: none; }
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.2s;
+}
+.service-card:hover::before { background: var(--accent); }
+.service-card:hover { background: #fafafa; }
+
+.service-num {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 0.75rem;
+  color: var(--muted-2);
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  display: block;
 }
 
-.service-card:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.service-icon {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+/* hide old icon */
+.service-icon { display: none; }
 
 .service-card h3 {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Shippori Mincho', serif;
   font-size: 1.35rem;
-  margin-bottom: 10px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
 .service-card p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 16px;
+  line-height: 1.85;
+  margin-bottom: 28px;
+  font-weight: 300;
 }
 
 .service-price {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--accent);
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.service-price::after {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+  margin-top: 10px;
+}
+
+/* ── FAQ ── */
+.faq {
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 80px;
+  margin-top: 0;
+}
+
+.faq-sidebar {
+  padding-top: 4px;
+}
+
+.faq-sidebar .section-title { font-size: 1.8rem; }
+.faq-sidebar .section-sub { font-size: 0.85rem; margin-top: 16px; }
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.faq-item:first-child { border-top: 1px solid var(--border); }
+
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 22px 0;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+.faq-q:hover { color: var(--accent); }
+
+.faq-toggle {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: all 0.2s;
+  font-style: normal;
+  line-height: 1;
+}
+
+.faq-item.open .faq-toggle {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.faq-a {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.9;
+  font-weight: 300;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.2s ease;
+  padding: 0;
+}
+
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding-bottom: 22px;
 }
 
 /* ── SHOWCASE IMAGES ── */
 .showcase-images {
-  padding: 24px 48px 0;
-  background: #ffffff;
+  padding: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .showcase-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
 }
 
 .showcase-grid img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 320px;
+  object-fit: cover;
   display: block;
-  border-radius: 0;
+  border-right: 1px solid var(--border-strong);
+  filter: saturate(0.85);
+  transition: filter 0.3s;
 }
+.showcase-grid img:last-child { border-right: none; }
+.showcase-grid img:hover { filter: saturate(1); }
 
 /* ── BOOKING SECTION ── */
-.booking { background: white; }
+.booking { background: var(--paper); }
 
 .booking-layout {
   display: grid;
@@ -990,25 +1200,41 @@ section {
 /* ── FOOTER ── */
 footer {
   background: var(--ink);
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.35);
   text-align: center;
-  padding: 32px 48px;
-  font-size: 0.85rem;
+  padding: 28px 48px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
 }
 
-footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
-footer strong { color: white; }
+footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  nav { padding: 16px 24px; }
+  nav { padding: 0 20px; }
   nav ul { display: none; }
-  .hero { padding: 100px 24px 60px; }
-  section { padding: 70px 24px; }
+  .hero { min-height: 100svh; }
+  .hero-content { padding: 90px 24px 60px 24px; }
+  .hero::before { left: 20px; }
+  .hero h1 { font-size: 2.6rem; }
+  section { padding: 60px 24px; }
   .booking-layout { grid-template-columns: 1fr; }
-  .showcase-grid { grid-template-columns: 1fr; }
-  .hero-points { grid-template-columns: 1fr; }
   .slot-manager-layout { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card { border-right: none; border-bottom: 1px solid var(--border-strong); }
+  .service-card:last-child { border-bottom: none; }
+  .services-header { flex-direction: column; align-items: flex-start; }
+  .faq-layout { grid-template-columns: 1fr; gap: 32px; }
+  .showcase-grid { grid-template-columns: 1fr; }
+  .showcase-grid img { height: 220px; border-right: none; border-bottom: 1px solid var(--border-strong); }
+  .hero-stats { flex-direction: column; gap: 20px; }
+  .hero-stat { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 20px; margin-right: 0; }
+  .hero-stat:last-child { border-bottom: none; padding-bottom: 0; }
+  .phone-banner { height: auto; padding: 20px 24px; flex-direction: column; gap: 8px; }
+  .phone-banner .phone-link { border-right: none; padding-right: 0; margin-right: 0; }
+  .hero-actions { width: 100%; }
+  .hero-actions .btn { flex: 1; justify-content: center; }
 }
 
 /* ── SCROLL FADE IN ── */
@@ -1029,11 +1255,12 @@ footer strong { color: white; }
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <div class="logo-drop">💧</div>
+    <div class="logo-mark">LB</div>
     LokalaBiltvättarna
   </a>
   <ul>
     <li><a href="#services">Tjänster</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="#booking">Boka</a></li>
     <li><a href="#admin" class="nav-cta">Admin</a></li>
   </ul>
@@ -1042,54 +1269,121 @@ footer strong { color: white; }
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
-  <div class="hero-blobs">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
   <div class="hero-content">
-    <div class="hero-badge">✦ Professionell biltvätt · Malmö</div>
-    <h1>Vi kommer till ditt område<br>och gör bilen <em>redo</em>.</h1>
-    <p class="hero-sub">Vi är två unga killar som startat vårt egna företag där vi erbjuder noggran handtvätt på plats. Detta är möjligt då vi utvecklat vattensnåla och miljövänliga metoder anpassat efter uppfartstvätt. Tack för att du väljer lokalt! </p>
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-line"></span>
+      <span class="hero-eyebrow-text">Professionell biltvätt · Malmö</span>
+    </div>
+    <h1>Vi kommer till ditt<br>område och gör<br>bilen <em>redo</em>.</h1>
+    <p class="hero-sub">Vi är två unga killar som startat vårt egna företag där vi erbjuder noggrann handtvätt på plats — med vattensnåla och miljövänliga metoder anpassade för uppfartstvätt. Tack för att du väljer lokalt.</p>
     <div class="hero-actions">
       <a href="#booking" class="btn btn-primary">Boka tvätt →</a>
       <a href="#services" class="btn btn-outline">Våra tjänster</a>
     </div>
-    <div class="hero-points">
-      <div class="hero-point">✔ Områdesbaserade tider</div>
-      <div class="hero-point">✔ Handtvätt med noggrannhet</div>
-      <div class="hero-point">✔ Snabb bokning online</div>
-      <div class="hero-point">✔ Betala på plats</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Paket</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">100%</div>
+        <div class="hero-stat-label">Handtvätt</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Malmö</div>
+        <div class="hero-stat-label">Hembesök</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- PHONE BANNER -->
 <div class="phone-banner">
-  <p>Frågor? Ring oss:</p>
-  <a href="tel:+46701234567" class="phone-link">📞 +46 70-123 45 67</a>
-  <p>Mån–Lör, 8:00 – 18:00</p>
+  <p>Frågor? Ring oss</p>
+  <a href="tel:+46701234567" class="phone-link">+46 70-123 45 67</a>
+  <span class="phone-hours">Mån–Lör &nbsp;·&nbsp; 08:00–18:00</span>
 </div>
 
 <!-- SERVICES -->
 <section class="services" id="services">
-  <h2 class="section-title">Tjänster och priser</h2>
-  <p class="section-sub">Alla tvättar avslutas med en kontroll så att bilen lämnar oss i toppskick.</p>
+  <div class="section-tag">Tjänster och priser</div>
+  <div class="services-header">
+    <h2 class="section-title">Vad ingår?</h2>
+    <p class="section-sub" style="margin-bottom:0;">Alla tvättar avslutas med en kontroll så att bilen lämnar oss i toppskick. Betalning sker på plats.</p>
+  </div>
   <div class="services-grid">
     <div class="service-card fade-up">
+      <span class="service-num">01</span>
       <h3>Express-tvätt</h3>
-      <p>Utförlig handtvätt utvändigt med avspolning och torkning.</p>
+      <p>Utförlig handtvätt utvändigt med avspolning och torkning. Perfekt för löpande underhåll.</p>
       <div class="service-price">299 kr</div>
     </div>
     <div class="service-card fade-up">
+      <span class="service-num">02</span>
       <h3>Premium-tvätt</h3>
-      <p>Invändigt och utvändigt, djupdammsugning, rengöring av paneler och mattor samt vård av interiören.</p>
+      <p>Invändigt och utvändigt — djupdammsugning, rengöring av paneler och mattor samt vård av interiören.</p>
       <div class="service-price">499 kr</div>
     </div>
     <div class="service-card fade-up">
+      <span class="service-num">03</span>
       <h3>Helrekond</h3>
-      <p>Vårt mest kompletta paket: utvändigt, invändigt, motorrum och polering.</p>
+      <p>Vårt mest kompletta paket: utvändigt, invändigt, motorrum och polering för ett lysande resultat.</p>
       <div class="service-price">899 kr</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-tag">Vanliga frågor</div>
+  <div class="faq-layout">
+    <div class="faq-sidebar">
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-sub">Hittar du inte svaret du söker? Ring oss så hjälper vi dig direkt.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Behöver jag vara hemma under tvättningen?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Nej, du behöver inte vara hemma. Det räcker att bilen är tillgänglig och att du lämnat nycklarna om interiören ska tvättas. Vi meddelar dig när vi är klara.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Hur betalar jag?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Betalning sker på plats efter avslutat arbete, antingen via Swish eller kontant. Vi tar inte betalt i förväg.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Vilka områden i Malmö kör ni till?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Vi täcker de flesta stadsdelar i Malmö. Tillgängliga områden och datum visas direkt i bokningsformuläret — välj ett datum för att se vilka distrikt som har lediga tider.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Vad händer om det regnar?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Lätt regn påverkar inte arbetet — vi kommer ändå och slutresultatet blir lika bra. Vid kraftigt oväder kontaktar vi dig för att boka om till närmaste lediga tid utan extra kostnad.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Hur lång tid tar en tvätt?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Express-tvätten tar ungefär 30–45 minuter. Premium-tvätten tar ca 60–90 minuter. Helrekond tar 2–3 timmar beroende på bilens storlek och skick.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Används mycket vatten?
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Nej — vi har anpassat våra metoder för uppfartstvätt och använder vattensnåla tekniker. Vi tar med allt vi behöver och du behöver inte ha tillgång till vatten.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1219,7 +1513,7 @@ footer strong { color: white; }
 
 <!-- FOOTER -->
 <footer>
-  <p><strong>LokalaBiltvättarna</strong> · Industrigatan 12, 211 46 Malmö · <a href="tel:+46701234567">+46 70-123 45 67</a></p>
+  <p><strong>LokalaBiltvättarna</strong> · Malmö · <a href="tel:+46701234567">+46 70-123 45 67</a></p>
 </footer>
 
 <!-- TOAST -->
@@ -1696,6 +1990,20 @@ async function loadSlots() {
     slotsCache = await res.json();
   } catch(e) {
     slotsCache = {};
+  }
+}
+
+// ── FAQ ────────────────────────────────────────────────────────────────────
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-toggle').textContent = '+';
+  });
+  if (!wasOpen) {
+    item.classList.add('open');
+    btn.querySelector('.faq-toggle').textContent = '−';
   }
 }
 
