@@ -3,6 +3,8 @@ import sqlite3
 import csv
 import os
 import json
+import hashlib
+import secrets
 from datetime import datetime
 from contextlib import contextmanager
 
@@ -10,13 +12,11 @@ BASE_DIR = os.path.dirname(__file__)
 app = Flask(__name__)
 
 # ── config ────────────────────────────────────────────────────────────────────
-# On Fly.io, mount your volume at /data and set APP_DATA_DIR=/data
-# Locally it just uses ./data/ as before
 DATA_DIR = os.environ.get("APP_DATA_DIR", os.path.join(BASE_DIR, "data"))
 DB_FILE  = os.environ.get("APP_DB_FILE",  os.path.join(DATA_DIR, "sparkwash.db"))
 CSV_FILE = os.environ.get("APP_CSV_FILE", os.path.join(DATA_DIR, "bookings.csv"))
 
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")  # set via env var in production
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -25,8 +25,8 @@ os.makedirs(DATA_DIR, exist_ok=True)
 @contextmanager
 def get_db():
     conn = sqlite3.connect(DB_FILE)
-    conn.row_factory = sqlite3.Row          # rows behave like dicts
-    conn.execute("PRAGMA journal_mode=WAL") # safe for concurrent reads
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     try:
         yield conn
@@ -49,22 +49,40 @@ def init_db():
                 UNIQUE(date, time)
             );
 
-            CREATE TABLE IF NOT EXISTS bookings (
+            CREATE TABLE IF NOT EXISTS users (
                 id         TEXT PRIMARY KEY,
-                name       TEXT NOT NULL,
-                phone      TEXT NOT NULL,
-                address    TEXT NOT NULL,
-                district   TEXT NOT NULL DEFAULT '',
-                service    TEXT NOT NULL,
-                date       TEXT NOT NULL,
-                time       TEXT NOT NULL,
-                notes      TEXT NOT NULL DEFAULT '',
+                email      TEXT NOT NULL UNIQUE,
+                password   TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS bookings (
+                id          TEXT PRIMARY KEY,
+                name        TEXT NOT NULL,
+                phone       TEXT NOT NULL,
+                address     TEXT NOT NULL,
+                district    TEXT NOT NULL DEFAULT '',
+                service     TEXT NOT NULL,
+                date        TEXT NOT NULL,
+                time        TEXT NOT NULL,
+                notes       TEXT NOT NULL DEFAULT '',
+                created_at  TEXT NOT NULL,
+                user_id     TEXT,
+                guest_token TEXT
+            );
         """)
+        # Migration: add user_id / guest_token columns if they don't exist yet
+        try:
+            db.execute("ALTER TABLE bookings ADD COLUMN user_id TEXT")
+        except Exception:
+            pass
+        try:
+            db.execute("ALTER TABLE bookings ADD COLUMN guest_token TEXT")
+        except Exception:
+            pass
 
 def migrate_from_json():
-    """One-time import of old JSON data into SQLite. Safe to call repeatedly."""
+    """One-time import of old JSON data into SQLite."""
     legacy_data = os.path.join(DATA_DIR, "app-data.json")
     legacy_slots = os.path.join(DATA_DIR, "slots.json")
     legacy_bookings = os.path.join(DATA_DIR, "bookings.json")
@@ -81,10 +99,9 @@ def migrate_from_json():
             with open(legacy_bookings) as f:
                 data["bookings"] = json.load(f)
     else:
-        return  # nothing to migrate
+        return
 
     with get_db() as db:
-        # Only migrate if tables are empty
         if db.execute("SELECT COUNT(*) FROM slots").fetchone()[0] > 0:
             return
 
@@ -107,15 +124,15 @@ def migrate_from_json():
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
-def booking_to_dict(row):
-    return dict(row)
+def hash_password(pw):
+    return hashlib.sha256(pw.encode()).hexdigest()
 
 def export_csv():
     with get_db() as db:
         rows = db.execute("SELECT * FROM bookings ORDER BY date, time").fetchall()
     if not rows:
         return
-    keys = ["id","name","phone","address","district","service","date","time","notes","created_at"]
+    keys = ["id","name","phone","address","district","service","date","time","notes","created_at","user_id","guest_token"]
     with open(CSV_FILE, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
         writer.writeheader()
@@ -127,11 +144,101 @@ def export_csv():
 def index():
     return send_from_directory(BASE_DIR, "index.html")
 
+# ── user auth API ─────────────────────────────────────────────────────────────
+
+@app.route("/api/user/register", methods=["POST"])
+def register():
+    data = request.json or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+    if len(password) < 6:
+        return jsonify({"error": "Password must be at least 6 characters"}), 400
+
+    user_id = f"U{secrets.token_hex(8)}"
+    try:
+        with get_db() as db:
+            db.execute(
+                "INSERT INTO users (id, email, password, created_at) VALUES (?,?,?,?)",
+                (user_id, email, hash_password(password), datetime.now().isoformat())
+            )
+    except sqlite3.IntegrityError:
+        return jsonify({"error": "An account with this email already exists"}), 409
+
+    return jsonify({"success": True, "user_id": user_id, "email": email})
+
+@app.route("/api/user/login", methods=["POST"])
+def user_login():
+    data = request.json or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    with get_db() as db:
+        user = db.execute(
+            "SELECT * FROM users WHERE email=? AND password=?",
+            (email, hash_password(password))
+        ).fetchone()
+
+    if not user:
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    return jsonify({"success": True, "user_id": user["id"], "email": user["email"]})
+
+# ── bookings for logged-in users / guests ─────────────────────────────────────
+
+@app.route("/api/my-bookings", methods=["GET"])
+def get_my_bookings():
+    user_id = request.args.get("user_id")
+    guest_token = request.args.get("guest_token")
+
+    if not user_id and not guest_token:
+        return jsonify({"error": "user_id or guest_token required"}), 400
+
+    with get_db() as db:
+        if user_id:
+            rows = db.execute(
+                "SELECT * FROM bookings WHERE user_id=? ORDER BY date, time", (user_id,)
+            ).fetchall()
+        else:
+            rows = db.execute(
+                "SELECT * FROM bookings WHERE guest_token=? ORDER BY date, time", (guest_token,)
+            ).fetchall()
+
+    return jsonify([dict(r) for r in rows])
+
+@app.route("/api/my-bookings/<booking_id>", methods=["DELETE"])
+def delete_my_booking(booking_id):
+    data = request.json or {}
+    user_id = data.get("user_id")
+    guest_token = data.get("guest_token")
+
+    if not user_id and not guest_token:
+        return jsonify({"error": "user_id or guest_token required"}), 400
+
+    with get_db() as db:
+        if user_id:
+            row = db.execute(
+                "SELECT * FROM bookings WHERE id=? AND user_id=?", (booking_id, user_id)
+            ).fetchone()
+        else:
+            row = db.execute(
+                "SELECT * FROM bookings WHERE id=? AND guest_token=?", (booking_id, guest_token)
+            ).fetchone()
+
+        if not row:
+            return jsonify({"error": "Booking not found or not yours"}), 404
+
+        db.execute("DELETE FROM bookings WHERE id=?", (booking_id,))
+
+    export_csv()
+    return jsonify({"success": True})
+
 # ── slots API ─────────────────────────────────────────────────────────────────
 
 @app.route("/api/slots", methods=["GET"])
 def get_slots():
-    """Returns slots grouped by date, same shape as before: {date: [{time, capacity, district}]}"""
     with get_db() as db:
         rows = db.execute("SELECT date, time, capacity, district FROM slots ORDER BY date, time").fetchall()
 
@@ -146,12 +253,11 @@ def get_slots():
 
 @app.route("/api/slots", methods=["POST"])
 def set_slots():
-    """Replace all slots for the submitted dates (admin only)."""
     data = request.json or {}
     if data.get("admin_password") != ADMIN_PASSWORD:
         return jsonify({"error": "Unauthorized"}), 403
 
-    new_slots = data.get("slots", {})  # {date: [{time, capacity, district}]}
+    new_slots = data.get("slots", {})
 
     with get_db() as db:
         for date, slot_list in new_slots.items():
@@ -190,6 +296,8 @@ def create_booking():
             return jsonify({"error": f"Missing field: {field}"}), 400
 
     date, time = data["date"], data["time"]
+    user_id = data.get("user_id") or None
+    guest_token = data.get("guest_token") or None
 
     with get_db() as db:
         slot = db.execute(
@@ -209,11 +317,12 @@ def create_booking():
         booking_id = f"BK{datetime.now().strftime('%Y%m%d%H%M%S%f')[:18]}"
         db.execute(
             """INSERT INTO bookings
-               (id, name, phone, address, district, service, date, time, notes, created_at)
-               VALUES (?,?,?,?,?,?,?,?,?,?)""",
+               (id, name, phone, address, district, service, date, time, notes, created_at, user_id, guest_token)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
             (booking_id, data["name"], data["phone"], data["address"],
              slot["district"], data["service"], date, time,
-             data.get("notes", ""), datetime.now().isoformat())
+             data.get("notes", ""), datetime.now().isoformat(),
+             user_id, guest_token)
         )
 
     export_csv()
@@ -270,6 +379,5 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
 
-# Gunicorn entrypoint (called by Procfile / Fly.io)
 init_db()
 migrate_from_json()

@@ -26,7 +26,6 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -69,9 +68,6 @@ nav {
   flex-shrink: 0;
 }
 
-/* legacy class alias */
-.logo-drop { display: none; }
-
 nav ul {
   list-style: none;
   display: flex; gap: 0;
@@ -102,6 +98,228 @@ nav ul a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
 }
 .nav-cta:hover { opacity: 0.85 !important; background: var(--accent) !important; }
 
+/* ── AUTH NAV BUTTON ── */
+.nav-auth-btn {
+  display: flex; align-items: center; gap: 8px;
+  border: none; background: none; cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 20px;
+  height: 60px;
+  border-left: 1px solid var(--border);
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.nav-auth-btn:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
+.nav-auth-btn .auth-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent);
+  color: white; font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  margin: 20px;
+  overflow: hidden;
+  transform: translateY(24px);
+  transition: transform 0.25s;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+
+.modal-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.modal-subtitle {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 1.2rem;
+  border-radius: 50%;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: var(--cream); }
+
+.modal-body { padding: 28px 32px; }
+
+.modal-tabs {
+  display: flex; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+}
+
+.modal-tab {
+  flex: 1; padding: 12px; text-align: center;
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer;
+  border: none; background: none;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.modal-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.modal-form-group { margin-bottom: 16px; }
+
+.modal-form-group label {
+  display: block;
+  font-size: 0.78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--muted); margin-bottom: 7px;
+}
+
+.modal-form-group input {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 10px;
+  background: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.modal-form-group input:focus { border-color: var(--accent); }
+
+.modal-submit {
+  width: 100%; padding: 14px;
+  background: var(--accent); color: white;
+  border: none; border-radius: 999px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+.modal-submit:hover { background: var(--accent-light); }
+.modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.modal-divider {
+  text-align: center; margin: 20px 0;
+  font-size: 0.78rem; color: var(--muted);
+  position: relative;
+}
+.modal-divider::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: 1px; background: var(--border);
+}
+.modal-divider span { background: var(--paper); padding: 0 12px; position: relative; }
+
+.modal-guest-btn {
+  width: 100%; padding: 12px;
+  background: transparent; color: var(--ink);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.modal-guest-btn:hover { background: var(--cream); border-color: var(--muted); }
+
+.modal-error {
+  background: #fdf0ee; border: 1px solid #e8c5bf;
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 0.83rem; color: var(--error);
+  margin-bottom: 16px; display: none;
+}
+.modal-error.visible { display: block; }
+
+/* ── MY BOOKINGS MODAL ── */
+.my-bookings-list { display: flex; flex-direction: column; gap: 12px; }
+
+.my-booking-card {
+  background: white;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px;
+}
+
+.my-booking-info {}
+.my-booking-date {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1rem; font-weight: 500;
+  margin-bottom: 4px;
+}
+.my-booking-sub {
+  font-size: 0.8rem; color: var(--muted);
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.my-booking-service {
+  display: inline-block; margin-top: 6px;
+  background: #EBF5EE; color: var(--accent);
+  border-radius: 6px; padding: 2px 8px;
+  font-size: 0.75rem; font-weight: 600;
+}
+
+.my-booking-delete {
+  background: none; border: 1.5px solid #e8c5bf;
+  border-radius: 8px; padding: 6px 10px;
+  color: var(--error); font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif;
+}
+.my-booking-delete:hover { background: #fdf0ee; }
+
+.my-bookings-empty {
+  text-align: center; padding: 32px 16px;
+  color: var(--muted); font-size: 0.9rem;
+}
+
+.user-info-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--cream); border-radius: 10px;
+  margin-bottom: 20px; font-size: 0.83rem;
+}
+.user-info-bar .user-email { font-weight: 600; flex: 1; }
+.user-logout-btn {
+  background: none; border: 1px solid var(--border-strong);
+  border-radius: 6px; padding: 4px 10px;
+  font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  color: var(--muted); transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.user-logout-btn:hover { border-color: var(--error); color: var(--error); }
+
 /* ── HERO ── */
 .hero {
   min-height: 100svh;
@@ -113,16 +331,10 @@ nav ul a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
   border-bottom: 1px solid var(--border-strong);
 }
 
-.hero-bg { display: none; }
-.hero-blobs { display: none; }
-.blob { display: none; }
-
-/* Decorative vertical rule */
 .hero::before {
   content: '';
   position: absolute;
-  left: 48px;
-  top: 0; bottom: 0;
+  left: 48px; top: 0; bottom: 0;
   width: 1px;
   background: var(--border-strong);
   z-index: 0;
@@ -132,137 +344,59 @@ nav ul a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
   position: relative; z-index: 1;
   max-width: 100%;
   padding: 100px 80px 80px 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: flex; flex-direction: column; justify-content: center;
   flex: 1;
 }
 
 .hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   margin-bottom: 36px;
 }
-
-.hero-eyebrow-line {
-  width: 32px;
-  height: 1px;
-  background: var(--accent);
-}
-
+.hero-eyebrow-line { width: 32px; height: 1px; background: var(--accent); }
 .hero-eyebrow-text {
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--accent);
-  font-family: 'Noto Sans JP', sans-serif;
 }
-
-/* hide old badge */
-.hero-badge { display: none !important; }
 
 .hero h1 {
   font-family: 'Shippori Mincho', serif;
   font-size: clamp(2.6rem, 5.5vw, 5rem);
-  font-weight: 500;
-  line-height: 1.12;
-  margin-bottom: 28px;
-  color: var(--ink);
-  letter-spacing: -0.01em;
+  font-weight: 500; line-height: 1.12;
+  margin-bottom: 28px; color: var(--ink); letter-spacing: -0.01em;
 }
-
-.hero h1 em {
-  font-style: italic;
-  color: var(--accent);
-}
+.hero h1 em { font-style: italic; color: var(--accent); }
 
 .hero-sub {
-  font-size: 0.95rem;
-  color: #4a4a4a;
-  line-height: 1.9;
-  margin-bottom: 40px;
-  max-width: 500px;
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-size: 0.95rem; color: #4a4a4a; line-height: 1.9;
+  margin-bottom: 40px; max-width: 500px; font-weight: 300; letter-spacing: 0.01em;
 }
 
 .hero-actions {
   display: flex; gap: 0; flex-wrap: wrap;
   margin-bottom: 48px;
-  border: 1px solid var(--border-strong);
-  width: fit-content;
+  border: 1px solid var(--border-strong); width: fit-content;
 }
 
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 15px 32px;
   font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  border-radius: 0;
-  transition: all 0.2s;
-  text-decoration: none;
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; border: none; border-radius: 0;
+  transition: all 0.2s; text-decoration: none;
 }
+.btn-primary { background: var(--accent); color: white; border-right: 1px solid rgba(255,255,255,0.2); }
+.btn-primary:hover { background: #155a32; }
+.btn-outline { background: transparent; color: var(--ink); border-left: 1px solid var(--border-strong); }
+.btn-outline:hover { background: rgba(0,0,0,0.04); }
 
-.btn-primary {
-  background: var(--accent);
-  color: white;
-  border-right: 1px solid rgba(255,255,255,0.2);
-}
-.btn-primary:hover {
-  background: #155a32;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--ink);
-  border-left: 1px solid var(--border-strong);
-}
-.btn-outline:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-/* Stats row */
-.hero-stats {
-  display: flex;
-  gap: 0;
-  border-top: 1px solid var(--border);
-  padding-top: 32px;
-  max-width: 520px;
-}
-
-.hero-stat {
-  flex: 1;
-  padding-right: 28px;
-  border-right: 1px solid var(--border);
-  margin-right: 28px;
-}
+.hero-stats { display: flex; gap: 0; border-top: 1px solid var(--border); padding-top: 32px; max-width: 520px; }
+.hero-stat { flex: 1; padding-right: 28px; border-right: 1px solid var(--border); margin-right: 28px; }
 .hero-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
-
-.hero-stat-num {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 1.8rem;
-  font-weight: 500;
-  color: var(--ink);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.hero-stat-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* hide old hero-points */
-.hero-points { display: none; }
+.hero-stat-num { font-family: 'Shippori Mincho', serif; font-size: 1.8rem; font-weight: 500; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.hero-stat-label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
 /* ── SECTIONS ── */
 section {
@@ -272,941 +406,238 @@ section {
 }
 
 .section-tag {
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  font-size: 0.72rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
 }
-.section-tag::before {
-  content: '';
-  display: inline-block;
-  width: 24px;
-  height: 1px;
-  background: var(--accent);
-}
+.section-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
 
 .section-title {
   font-family: 'Shippori Mincho', serif;
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--ink);
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 500;
+  line-height: 1.2; color: var(--ink); margin-bottom: 14px; letter-spacing: -0.01em;
 }
 
-.section-sub {
-  font-size: 0.9rem;
-  color: var(--muted);
-  max-width: 480px;
-  line-height: 1.9;
-  font-weight: 300;
-}
+.section-sub { font-size: 0.9rem; color: var(--muted); max-width: 480px; line-height: 1.9; font-weight: 300; }
 
 /* ── PHONE BANNER ── */
 .phone-banner {
-  background: var(--ink);
-  color: white;
-  text-align: center;
-  padding: 0 48px;
+  background: var(--ink); color: white;
+  text-align: center; padding: 0 48px;
   height: 64px;
   display: flex; align-items: center; justify-content: center; gap: 0;
   flex-wrap: nowrap;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
-
-.phone-banner p {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.45;
-  margin-right: 20px;
-}
-
-.phone-num { display: none; }
-
-.phone-banner .phone-link {
-  color: white;
-  text-decoration: none;
-  font-family: 'Shippori Mincho', serif;
-  font-size: 1.3rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  margin-right: 32px;
-  border-right: 1px solid rgba(255,255,255,0.15);
-  padding-right: 32px;
-}
-
-.phone-hours {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.35;
-}
+.phone-banner p { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.45; margin-right: 20px; }
+.phone-banner .phone-link { color: white; text-decoration: none; font-family: 'Shippori Mincho', serif; font-size: 1.3rem; font-weight: 500; letter-spacing: 0.04em; margin-right: 32px; border-right: 1px solid rgba(255,255,255,0.15); padding-right: 32px; }
+.phone-hours { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.35; }
 
 /* ── SERVICES ── */
-.services {
-  background: var(--paper);
-  position: relative;
-}
-
-.services-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 48px;
-  gap: 24px;
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border: 1px solid var(--border-strong);
-  margin-top: 0;
-}
+.services { background: var(--paper); position: relative; }
+.services-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; gap: 24px; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border-strong); }
 
 .service-card {
-  background: white;
-  border-right: 1px solid var(--border-strong);
-  padding: 40px 36px;
-  position: relative;
-  transition: background 0.2s;
-  overflow: hidden;
+  background: white; border-right: 1px solid var(--border-strong);
+  padding: 40px 36px; position: relative; transition: background 0.2s; overflow: hidden;
 }
 .service-card:last-child { border-right: none; }
-
-.service-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: transparent;
-  transition: background 0.2s;
-}
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: background 0.2s; }
 .service-card:hover::before { background: var(--accent); }
 .service-card:hover { background: #fafafa; }
 
-.service-num {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 0.75rem;
-  color: var(--muted-2);
-  letter-spacing: 0.1em;
-  margin-bottom: 24px;
-  display: block;
-}
-
-/* hide old icon */
-.service-icon { display: none; }
-
-.service-card h3 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 1.35rem;
-  font-weight: 500;
-  margin-bottom: 12px;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-}
-
-.service-card p {
-  font-size: 0.85rem;
-  color: var(--muted);
-  line-height: 1.85;
-  margin-bottom: 28px;
-  font-weight: 300;
-}
-
-.service-price {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-}
-.service-price::after {
-  content: '';
-  display: block;
-  width: 20px;
-  height: 1px;
-  background: var(--accent);
-  margin-top: 10px;
-}
+.service-num { font-family: 'Shippori Mincho', serif; font-size: 0.75rem; color: var(--muted-2); letter-spacing: 0.1em; margin-bottom: 24px; display: block; }
+.service-card h3 { font-family: 'Shippori Mincho', serif; font-size: 1.35rem; font-weight: 500; margin-bottom: 12px; letter-spacing: -0.01em; color: var(--ink); }
+.service-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.85; margin-bottom: 28px; font-weight: 300; }
+.service-price { font-family: 'Shippori Mincho', serif; font-size: 1.6rem; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; }
+.service-price::after { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); margin-top: 10px; }
 
 /* ── FAQ ── */
-.faq {
-  background: white;
-  border-bottom: 1px solid var(--border);
-}
-
-.faq-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 80px;
-  margin-top: 0;
-}
-
-.faq-sidebar {
-  padding-top: 4px;
-}
-
+.faq { background: white; border-bottom: 1px solid var(--border); }
+.faq-layout { display: grid; grid-template-columns: 240px 1fr; gap: 80px; }
+.faq-sidebar { padding-top: 4px; }
 .faq-sidebar .section-title { font-size: 1.8rem; }
 .faq-sidebar .section-sub { font-size: 0.85rem; margin-top: 16px; }
-
-.faq-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.faq-item {
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-}
-
+.faq-list { display: flex; flex-direction: column; }
+.faq-item { border-bottom: 1px solid var(--border); overflow: hidden; }
 .faq-item:first-child { border-top: 1px solid var(--border); }
 
 .faq-q {
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 22px 0;
-  font-family: 'Shippori Mincho', serif;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--ink);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  letter-spacing: 0.01em;
-  transition: color 0.2s;
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 22px 0; font-family: 'Shippori Mincho', serif; font-size: 1rem;
+  font-weight: 500; color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  letter-spacing: 0.01em; transition: color 0.2s;
 }
-
 .faq-q:hover { color: var(--accent); }
 
-.faq-toggle {
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--border-strong);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-  color: var(--muted);
-  transition: all 0.2s;
-  font-style: normal;
-  line-height: 1;
-}
+.faq-toggle { width: 24px; height: 24px; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; color: var(--muted); transition: all 0.2s; font-style: normal; line-height: 1; }
+.faq-item.open .faq-toggle { background: var(--accent); border-color: var(--accent); color: white; }
 
-.faq-item.open .faq-toggle {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-
-.faq-a {
-  font-size: 0.88rem;
-  color: var(--muted);
-  line-height: 1.9;
-  font-weight: 300;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, padding 0.2s ease;
-  padding: 0;
-}
-
-.faq-item.open .faq-a {
-  max-height: 300px;
-  padding-bottom: 22px;
-}
+.faq-a { font-size: 0.88rem; color: var(--muted); line-height: 1.9; font-weight: 300; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s ease; padding: 0; }
+.faq-item.open .faq-a { max-height: 300px; padding-bottom: 22px; }
 
 /* ── SHOWCASE IMAGES ── */
-.showcase-images {
-  padding: 0;
-  background: var(--paper);
-  border-bottom: 1px solid var(--border-strong);
-}
-
-.showcase-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0;
-}
-
-.showcase-grid img {
-  width: 100%;
-  height: 320px;
-  object-fit: cover;
-  display: block;
-  border-right: 1px solid var(--border-strong);
-  filter: saturate(0.85);
-  transition: filter 0.3s;
-}
+.showcase-images { padding: 0; background: var(--paper); border-bottom: 1px solid var(--border-strong); }
+.showcase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; }
+.showcase-grid img { width: 100%; height: 320px; object-fit: cover; display: block; border-right: 1px solid var(--border-strong); filter: saturate(0.85); transition: filter 0.3s; }
 .showcase-grid img:last-child { border-right: none; }
 .showcase-grid img:hover { filter: saturate(1); }
 
 /* ── BOOKING SECTION ── */
 .booking { background: var(--paper); }
-
-.booking-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 64px;
-  margin-top: 56px;
-  align-items: start;
-}
+.booking-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 64px; margin-top: 56px; align-items: start; }
 
 /* calendar */
-.cal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.cal-month {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem;
-}
-
-.cal-nav {
-  background: none; border: 1px solid var(--border);
-  width: 34px; height: 34px; border-radius: 50%;
-  cursor: pointer; font-size: 1rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-month { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+.cal-nav { background: none; border: 1px solid var(--border); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .cal-nav:hover { background: var(--cream); }
 
-.cal-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-day-label { text-align: center; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 8px 0; }
 
-.cal-day-label {
-  text-align: center;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  padding: 8px 0;
-}
-
-.cal-day {
-  aspect-ratio: 1;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  border: 1.5px solid transparent;
-  color: var(--muted);
-}
-
+.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.88rem; cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; color: var(--muted); }
 .cal-day.empty { cursor: default; }
 .cal-day.past { opacity: 0.3; cursor: default; }
-.cal-day.has-slots {
-  color: var(--ink);
-  background: #EBF5EE;
-  border-color: #C8E8D4;
-}
-.cal-day.has-slots:hover, .cal-day.selected {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
+.cal-day.has-slots { color: var(--ink); background: #EBF5EE; border-color: #C8E8D4; }
+.cal-day.has-slots:hover, .cal-day.selected { background: var(--accent); color: white; border-color: var(--accent); }
 
-.cal-legend {
-  display: flex; gap: 16px; margin-top: 12px;
-  font-size: 0.78rem; color: var(--muted);
-}
-
-.legend-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  display: inline-block; margin-right: 5px;
-  vertical-align: middle;
-}
+.cal-legend { display: flex; gap: 16px; margin-top: 12px; font-size: 0.78rem; color: var(--muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
 
 /* time slots */
-.time-slots-area {
-  margin-top: 24px;
-}
+.time-slots-area { margin-top: 24px; }
+.time-slots-title { font-weight: 600; margin-bottom: 12px; font-size: 0.9rem; }
+.time-slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
-.time-slots-title {
-  font-weight: 600; margin-bottom: 12px; font-size: 0.9rem;
-}
-
-.time-slots-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.time-slot-btn {
-  padding: 12px 8px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: var(--card);
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.time-slot-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: #EBF5EE;
-}
-
-.time-slot-btn.selected {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-.time-slot-btn:disabled {
-  opacity: 0.4; cursor: not-allowed;
-  background: var(--cream);
-}
-
+.time-slot-btn { padding: 12px 8px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--card); cursor: pointer; text-align: center; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.time-slot-btn:hover:not(:disabled) { border-color: var(--accent); background: #EBF5EE; }
+.time-slot-btn.selected { background: var(--accent); color: white; border-color: var(--accent); }
+.time-slot-btn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--cream); }
 .time-slot-btn .slot-time { font-weight: 600; font-size: 0.92rem; }
 .time-slot-btn .slot-avail { font-size: 0.72rem; color: inherit; opacity: 0.7; margin-top: 2px; }
 .time-slot-btn .slot-district { font-size: 0.72rem; color: inherit; opacity: 0.85; margin-top: 2px; }
 
 /* booking form */
-.booking-form {
-  background: var(--cream);
-  border-radius: var(--radius);
-  padding: 36px;
-  border: 1px solid var(--border);
-}
-
-.form-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.5rem;
-  margin-bottom: 28px;
-}
-
+.booking-form { background: var(--cream); border-radius: var(--radius); padding: 36px; border: 1px solid var(--border); }
+.form-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin-bottom: 28px; }
 .form-group { margin-bottom: 18px; }
-
-.form-group label {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
+.form-group label { display: block; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: white;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  color: var(--ink);
-  transition: border-color 0.2s;
-  outline: none;
+  width: 100%; padding: 12px 16px;
+  border-radius: 10px; border: 1.5px solid var(--border);
+  background: white; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; color: var(--ink);
+  transition: border-color 0.2s; outline: none;
 }
-
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--accent);
-}
-
+.form-group textarea:focus { border-color: var(--accent); }
 .form-group textarea { resize: vertical; min-height: 80px; }
 
-.selected-summary {
-  background: white;
-  border-radius: 10px;
-  padding: 14px 16px;
-  border: 1.5px solid var(--accent);
-  font-size: 0.88rem;
-  margin-bottom: 20px;
-  display: none;
-}
-
+.selected-summary { background: white; border-radius: 10px; padding: 14px 16px; border: 1.5px solid var(--accent); font-size: 0.88rem; margin-bottom: 20px; display: none; }
 .selected-summary.visible { display: block; }
 
-.form-submit {
-  width: 100%;
-  padding: 16px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
+.form-submit { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .form-submit:hover { background: var(--accent-light); }
 .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── TOAST / ALERTS ── */
-.toast-container {
-  position: fixed; bottom: 30px; right: 30px;
-  display: flex; flex-direction: column; gap: 10px;
-  z-index: 999;
-}
-
-.toast {
-  padding: 14px 20px;
-  border-radius: 10px;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  animation: slideIn 0.3s ease;
-  max-width: 340px;
-}
-
+.toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+.toast { padding: 14px 20px; border-radius: 10px; color: white; font-size: 0.9rem; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.15); animation: slideIn 0.3s ease; max-width: 340px; }
 .toast.success { background: var(--accent); }
 .toast.error { background: var(--error); }
-
-@keyframes slideIn {
-  from { transform: translateX(100px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
 /* ── ADMIN PANEL ── */
 .admin-section { background: var(--ink); color: white; }
-
 .admin-section .section-tag { color: var(--gold); }
 .admin-section .section-title { color: white; }
 .admin-section .section-sub { color: rgba(255,255,255,0.55); }
 
-.admin-login {
-  max-width: 400px;
-  margin: 40px auto 0;
-  background: rgba(255,255,255,0.05);
-  border-radius: var(--radius);
-  padding: 36px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
+.admin-login { max-width: 400px; margin: 40px auto 0; background: rgba(255,255,255,0.05); border-radius: var(--radius); padding: 36px; border: 1px solid rgba(255,255,255,0.1); }
+.admin-login label { color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; }
+.admin-login input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: white; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; margin-bottom: 16px; }
+.admin-login input:focus { border-color: var(--gold); }
 
-.admin-login label {
-  color: rgba(255,255,255,0.6);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.admin-login input {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.08);
-  color: white;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  outline: none;
-  margin-bottom: 16px;
-}
-
-.admin-login input:focus {
-  border-color: var(--gold);
-}
-
-.btn-gold {
-  width: 100%;
-  padding: 14px;
-  background: var(--gold);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
+.btn-gold { width: 100%; padding: 14px; background: var(--gold); color: white; border: none; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
 .btn-gold:hover { opacity: 0.85; }
 
-.admin-panel {
-  display: none;
-  margin-top: 40px;
-}
-
+.admin-panel { display: none; margin-top: 40px; }
 .admin-panel.visible { display: block; }
 
-.admin-tabs {
-  display: flex; gap: 4px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 4px;
-  width: fit-content;
-  margin-bottom: 32px;
-}
-
-.admin-tab {
-  padding: 10px 22px;
-  border-radius: 9px;
-  border: none;
-  background: transparent;
-  color: rgba(255,255,255,0.5);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.admin-tab.active {
-  background: rgba(255,255,255,0.12);
-  color: white;
-}
+.admin-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.06); border-radius: 12px; padding: 4px; width: fit-content; margin-bottom: 32px; }
+.admin-tab { padding: 10px 22px; border-radius: 9px; border: none; background: transparent; color: rgba(255,255,255,0.5); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.admin-tab.active { background: rgba(255,255,255,0.12); color: white; }
 
 .admin-pane { display: none; }
 .admin-pane.active { display: block; }
 
 /* slot manager */
-.slot-manager-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 32px;
-}
+.slot-manager-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; }
+.slots-editor { background: rgba(255,255,255,0.05); border-radius: var(--radius); padding: 28px; border: 1px solid rgba(255,255,255,0.1); }
+.slots-date-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 20px; color: white; }
 
-.slot-cal-small .cal-day { font-size: 0.78rem; }
-
-.slots-editor {
-  background: rgba(255,255,255,0.05);
-  border-radius: var(--radius);
-  padding: 28px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.slots-date-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  color: white;
-}
-
-.slot-row {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 10px;
-}
-
-.slot-row input[type="time"],
-.slot-row input[type="number"] {
-  background: rgba(255,255,255,0.08);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 8px;
-  color: white;
-  padding: 8px 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  outline: none;
-}
-
-.slot-row input:focus {
-  border-color: var(--gold);
-}
-
+.slot-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.slot-row input[type="time"], .slot-row input[type="number"] { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 8px; color: white; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; }
+.slot-row input:focus { border-color: var(--gold); }
 .slot-row label { color: rgba(255,255,255,0.6); font-size: 0.82rem; }
 
-.btn-remove-slot {
-  background: rgba(192,57,43,0.3);
-  border: 1px solid rgba(192,57,43,0.5);
-  color: #E74C3C;
-  border-radius: 8px;
-  width: 32px; height: 32px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-}
-
+.btn-remove-slot { background: rgba(192,57,43,0.3); border: 1px solid rgba(192,57,43,0.5); color: #E74C3C; border-radius: 8px; width: 32px; height: 32px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
 .btn-remove-slot:hover { background: rgba(192,57,43,0.5); }
-
-.btn-add-slot {
-  background: rgba(200,146,42,0.15);
-  border: 1.5px dashed rgba(200,146,42,0.5);
-  color: var(--gold);
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  transition: all 0.2s;
-  margin-top: 8px;
-}
-
+.btn-add-slot { background: rgba(200,146,42,0.15); border: 1.5px dashed rgba(200,146,42,0.5); color: var(--gold); border-radius: 8px; padding: 8px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; margin-top: 8px; }
 .btn-add-slot:hover { background: rgba(200,146,42,0.25); }
 
 /* bookings table */
-.bookings-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-}
-
-.bookings-table th {
-  text-align: left;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.5);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
-
-.bookings-table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.85);
-}
-
+.bookings-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.bookings-table th { text-align: left; padding: 12px 16px; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.bookings-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
 .bookings-table tr:last-child td { border-bottom: none; }
-
 .bookings-table tr:hover td { background: rgba(255,255,255,0.03); }
 
-.btn-delete {
-  background: rgba(192,57,43,0.2);
-  border: 1px solid rgba(192,57,43,0.4);
-  color: #E74C3C;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 0.78rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-
+.btn-delete { background: rgba(192,57,43,0.2); border: 1px solid rgba(192,57,43,0.4); color: #E74C3C; border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
 .btn-delete:hover { background: rgba(192,57,43,0.4); }
 
-.btn-csv {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 24px;
-  background: var(--gold);
-  color: white;
-  border-radius: 999px;
-  border: none;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 0.2s;
-  margin-bottom: 20px;
-}
-
+.btn-csv { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--gold); color: white; border-radius: 999px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.2s; margin-bottom: 20px; }
 .btn-csv:hover { opacity: 0.85; }
 
 /* ── GROUPED BOOKINGS ── */
-.date-group {
-  margin-bottom: 28px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.date-group-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: rgba(200,146,42,0.12);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  cursor: pointer;
-  user-select: none;
-  gap: 12px;
-}
-
+.date-group { margin-bottom: 28px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+.date-group-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(200,146,42,0.12); border-bottom: 1px solid rgba(255,255,255,0.08); cursor: pointer; user-select: none; gap: 12px; }
 .date-group-header:hover { background: rgba(200,146,42,0.18); }
-
-.date-group-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.05rem;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.date-group-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.45);
-}
-
-.date-group-badge {
-  background: rgba(200,146,42,0.25);
-  color: var(--gold);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.date-group-toggle {
-  color: rgba(255,255,255,0.4);
-  font-size: 0.9rem;
-  transition: transform 0.2s;
-}
-
+.date-group-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+.date-group-meta { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; color: rgba(255,255,255,0.45); }
+.date-group-badge { background: rgba(200,146,42,0.25); color: var(--gold); border-radius: 999px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+.date-group-toggle { color: rgba(255,255,255,0.4); font-size: 0.9rem; transition: transform 0.2s; }
 .date-group.collapsed .date-group-toggle { transform: rotate(-90deg); }
 .date-group.collapsed .date-group-body { display: none; }
+.date-group-body { background: rgba(255,255,255,0.02); }
 
-.date-group-body {
-  background: rgba(255,255,255,0.02);
-}
-
-/* Timeline layout inside each date group */
-.booking-timeline {
-  display: flex;
-  flex-direction: column;
-}
-
-.booking-card {
-  display: grid;
-  grid-template-columns: 80px 1fr auto;
-  align-items: start;
-  gap: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  transition: background 0.15s;
-}
-
+.booking-timeline { display: flex; flex-direction: column; }
+.booking-card { display: grid; grid-template-columns: 80px 1fr auto; align-items: start; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
 .booking-card:last-child { border-bottom: none; }
 .booking-card:hover { background: rgba(255,255,255,0.03); }
-
-.booking-card-time {
-  padding: 16px 0 16px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  border-right: 1px solid rgba(255,255,255,0.07);
-  min-width: 80px;
-}
-
-.booking-time-label {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: white;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-}
-
-.booking-district-pill {
-  font-size: 0.68rem;
-  font-weight: 600;
-  background: rgba(26,107,60,0.3);
-  color: #6FC98E;
-  border-radius: 999px;
-  padding: 2px 7px;
-  letter-spacing: 0.03em;
-  max-width: 70px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.booking-card-info {
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.booking-card-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: white;
-}
-
-.booking-card-sub {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.45);
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.booking-card-sub span::before {
-  content: '';
-  margin-right: 4px;
-}
-
-.booking-service-tag {
-  display: inline-block;
-  background: rgba(26,107,60,0.25);
-  color: #6FC98E;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-top: 4px;
-  width: fit-content;
-}
-
-.booking-card-notes {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.35);
-  font-style: italic;
-  margin-top: 3px;
-}
-
-.booking-card-id {
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.2);
-  font-family: monospace;
-  margin-top: 2px;
-}
-
-.booking-card-actions {
-  padding: 16px 16px 16px 0;
-  display: flex;
-  align-items: flex-start;
-}
-
-.bookings-summary-bar {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.5);
-}
-
+.booking-card-time { padding: 16px 0 16px 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border-right: 1px solid rgba(255,255,255,0.07); min-width: 80px; }
+.booking-time-label { font-size: 1.05rem; font-weight: 700; color: white; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.booking-district-pill { font-size: 0.68rem; font-weight: 600; background: rgba(26,107,60,0.3); color: #6FC98E; border-radius: 999px; padding: 2px 7px; letter-spacing: 0.03em; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.booking-card-info { padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.booking-card-name { font-size: 0.95rem; font-weight: 600; color: white; }
+.booking-card-sub { font-size: 0.8rem; color: rgba(255,255,255,0.45); display: flex; gap: 12px; flex-wrap: wrap; }
+.booking-service-tag { display: inline-block; background: rgba(26,107,60,0.25); color: #6FC98E; border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; margin-top: 4px; width: fit-content; }
+.booking-card-notes { font-size: 0.78rem; color: rgba(255,255,255,0.35); font-style: italic; margin-top: 3px; }
+.booking-card-id { font-size: 0.68rem; color: rgba(255,255,255,0.2); font-family: monospace; margin-top: 2px; }
+.booking-card-actions { padding: 16px 16px 16px 0; display: flex; align-items: flex-start; }
+.bookings-summary-bar { display: flex; gap: 20px; flex-wrap: wrap; padding: 12px 16px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 20px; font-size: 0.82rem; color: rgba(255,255,255,0.5); }
 .bookings-summary-bar strong { color: white; }
 
 /* ── FOOTER ── */
-footer {
-  background: var(--ink);
-  color: rgba(255,255,255,0.35);
-  text-align: center;
-  padding: 28px 48px;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-}
-
+footer { background: var(--ink); color: rgba(255,255,255,0.35); text-align: center; padding: 28px 48px; font-size: 0.78rem; letter-spacing: 0.04em; }
 footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
 footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
 
@@ -1235,19 +666,12 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
   .phone-banner .phone-link { border-right: none; padding-right: 0; margin-right: 0; }
   .hero-actions { width: 100%; }
   .hero-actions .btn { flex: 1; justify-content: center; }
+  .modal { margin: 16px; }
 }
 
 /* ── SCROLL FADE IN ── */
-.fade-up {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.fade-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -1264,11 +688,92 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
     <li><a href="#booking">Boka</a></li>
     <li><a href="#admin" class="nav-cta">Admin</a></li>
   </ul>
+  <button class="nav-auth-btn" id="nav-auth-btn" onclick="openAuthModal()">
+    <span id="nav-auth-label">Logga in</span>
+  </button>
 </nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="auth-modal-title">Mitt konto</div>
+        <div class="modal-subtitle" id="auth-modal-subtitle">Logga in eller skapa konto</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs" id="auth-tabs">
+        <button class="modal-tab active" onclick="switchAuthTab('login', this)">Logga in</button>
+        <button class="modal-tab" onclick="switchAuthTab('register', this)">Skapa konto</button>
+      </div>
+
+      <div id="auth-error" class="modal-error"></div>
+
+      <!-- Login form -->
+      <div id="auth-pane-login">
+        <div class="modal-form-group">
+          <label>E-postadress</label>
+          <input type="email" id="login-email" placeholder="din@email.com" onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+        <div class="modal-form-group">
+          <label>Lösenord</label>
+          <input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+        <button class="modal-submit" id="login-submit" onclick="doLogin()">Logga in →</button>
+
+        <div class="modal-divider"><span>eller</span></div>
+        <button class="modal-guest-btn" onclick="continueAsGuest()">Fortsätt som gäst</button>
+      </div>
+
+      <!-- Register form -->
+      <div id="auth-pane-register" style="display:none;">
+        <div class="modal-form-group">
+          <label>E-postadress</label>
+          <input type="email" id="reg-email" placeholder="din@email.com" onkeydown="if(event.key==='Enter') doRegister()">
+        </div>
+        <div class="modal-form-group">
+          <label>Lösenord <span style="color:var(--muted-2);font-weight:400;">(minst 6 tecken)</span></label>
+          <input type="password" id="reg-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter') doRegister()">
+        </div>
+        <div class="modal-form-group">
+          <label>Bekräfta lösenord</label>
+          <input type="password" id="reg-pw2" placeholder="••••••••" onkeydown="if(event.key==='Enter') doRegister()">
+        </div>
+        <button class="modal-submit" id="reg-submit" onclick="doRegister()">Skapa konto →</button>
+
+        <div class="modal-divider"><span>eller</span></div>
+        <button class="modal-guest-btn" onclick="continueAsGuest()">Fortsätt som gäst</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MY BOOKINGS MODAL -->
+<div class="modal-overlay" id="my-bookings-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Mina bokningar</div>
+        <div class="modal-subtitle" id="my-bookings-subtitle">Dina aktiva bokningar</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('my-bookings-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="user-info-bar" id="my-bookings-user-bar">
+        <span class="user-email" id="my-bookings-user-email"></span>
+        <button class="user-logout-btn" onclick="logout()">Logga ut</button>
+      </div>
+      <div id="my-bookings-list" class="my-bookings-list">
+        <div class="my-bookings-empty">Laddar…</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-bg"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">
       <span class="hero-eyebrow-line"></span>
@@ -1403,28 +908,24 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
   <p class="section-sub">Boka tid från tillgängliga tider och distrikt. Betalning görs på plats via swish eller kontant.</p>
 
   <div class="booking-layout">
-    <!-- Left: Calendar + time slots -->
     <div>
       <div id="booking-calendar"></div>
-
       <div class="time-slots-area" id="time-slots-area" style="display:none;">
         <div class="time-slots-title">Tillgängliga tider för <span id="selected-date-label"></span></div>
         <div class="time-slots-grid" id="time-slots-grid"></div>
       </div>
-
       <div class="cal-legend" style="margin-top:16px;">
-        <span><span class="legend-dot" style="background:#188845;"></span>Available</span>
-        <span><span class="legend-dot" style="background:#ccc;"></span>No slots</span>
-        <span><span class="legend-dot" style="background:#1A6B3C;"></span>Selected</span>
+        <span><span class="legend-dot" style="background:#188845;"></span>Ledig</span>
+        <span><span class="legend-dot" style="background:#ccc;"></span>Inga tider</span>
+        <span><span class="legend-dot" style="background:#1A6B3C;"></span>Vald</span>
       </div>
     </div>
 
-    <!-- Right: Form -->
     <div>
       <div class="booking-form">
         <div class="form-title">Din Information</div>
         <div class="selected-summary" id="selected-summary">
-          📅 <span id="summary-text">Select a date and time to continue</span>
+          📅 <span id="summary-text">Välj datum och tid för att fortsätta</span>
         </div>
         <div class="form-group">
           <label>Namn</label>
@@ -1435,24 +936,24 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           <input type="tel" id="f-phone" placeholder="+46 70-123 45 67">
         </div>
         <div class="form-group">
-          <label>Address</label>
+          <label>Adress</label>
           <input type="text" id="f-address" placeholder="Industrigatan 12, Malmö">
         </div>
         <div class="form-group">
-          <label>Service</label>
+          <label>Tjänst</label>
           <select id="f-service">
-            <option value="">Välj en service…</option>
+            <option value="">Välj en tjänst…</option>
             <option value="Express Wash">Express-tvätt — 299 kr</option>
             <option value="Interior Detail">Premium-tvätt — 499 kr</option>
             <option value="Full Detail">Helrekond — 899 kr</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Notes (optional)</label>
-          <textarea id="f-notes" placeholder="e.g. SUV, har lite rost..."></textarea>
+          <label>Anteckningar (valfritt)</label>
+          <textarea id="f-notes" placeholder="t.ex. SUV, har lite rost…"></textarea>
         </div>
         <button class="form-submit" id="submit-btn" onclick="submitBooking()">
-          Confirm Booking
+          Bekräfta bokning
         </button>
       </div>
     </div>
@@ -1477,7 +978,6 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <button class="admin-tab" onclick="switchAdminTab('bookings', this)">📋 Se Bokningar</button>
     </div>
 
-    <!-- Slots pane -->
     <div class="admin-pane active" id="pane-slots">
       <div class="slot-manager-layout">
         <div>
@@ -1486,14 +986,13 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
         <div class="slots-editor" id="slots-editor">
           <div class="slots-date-title" id="admin-date-title">Välj ett datum för att redigera tider</div>
           <div id="slot-rows"></div>
-          <button class="btn-add-slot" id="btn-add-slot" style="display:none;" onclick="addSlotRow()">+ Add Time Slot</button>
+          <button class="btn-add-slot" id="btn-add-slot" style="display:none;" onclick="addSlotRow()">+ Lägg till tid</button>
           <br><br>
-          <button class="btn-gold" id="btn-save-slots" style="display:none;width:auto;padding:12px 28px;border-radius:999px;" onclick="saveSlots()">Save Slots</button>
+          <button class="btn-gold" id="btn-save-slots" style="display:none;width:auto;padding:12px 28px;border-radius:999px;" onclick="saveSlots()">Spara tider</button>
         </div>
       </div>
     </div>
 
-    <!-- Bookings pane -->
     <div class="admin-pane" id="pane-bookings">
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
@@ -1503,7 +1002,7 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           </select>
           <input id="bookings-search" oninput="renderGroupedBookings()" placeholder="Sök namn / telefon…" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;color:white;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;min-width:180px;" />
         </div>
-        <a class="btn-csv" id="csv-download-link" href="#" onclick="downloadCSV(event)" style="margin-bottom:0;">⬇ Download CSV</a>
+        <a class="btn-csv" id="csv-download-link" href="#" onclick="downloadCSV(event)" style="margin-bottom:0;">⬇ Ladda ner CSV</a>
       </div>
       <div id="bookings-summary-bar" style="margin-bottom:20px;"></div>
       <div id="bookings-grouped"></div>
@@ -1511,26 +1010,283 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <p><strong>LokalaBiltvättarna</strong> · Malmö · <a href="tel:+46701234567">+46 70-123 45 67</a></p>
 </footer>
 
-<!-- TOAST -->
 <div class="toast-container" id="toast-container"></div>
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────────────────
-const API = '';  // same origin
+const API = '';
 let adminPw = '';
 let selectedDate = null;
 let selectedTime = null;
 let selectedDistrict = '';
-let currentCalMonth = null;  // for booking cal
-let adminCalMonth = null;    // for admin cal
+let currentCalMonth = null;
+let adminCalMonth = null;
 let adminSelectedDate = null;
-let slotsCache = {};         // all slots from server
-let adminEditSlots = [];     // slots being edited for adminSelectedDate
+let slotsCache = {};
+let adminEditSlots = [];
+
+// ── AUTH STATE ─────────────────────────────────────────────────────────────
+// Persisted to localStorage
+let authState = {
+  mode: null,       // 'user' | 'guest' | null
+  userId: null,
+  email: null,
+  guestToken: null
+};
+
+function loadAuthState() {
+  try {
+    const raw = localStorage.getItem('lb_auth');
+    if (raw) authState = JSON.parse(raw);
+  } catch(e) {}
+  // Always ensure a guest token exists for this device
+  if (!authState.guestToken) {
+    authState.guestToken = 'GT' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    saveAuthState();
+  }
+}
+
+function saveAuthState() {
+  localStorage.setItem('lb_auth', JSON.stringify(authState));
+}
+
+function updateNavAuth() {
+  const btn = document.getElementById('nav-auth-btn');
+  const label = document.getElementById('nav-auth-label');
+  if (authState.mode === 'user') {
+    const initials = authState.email ? authState.email[0].toUpperCase() : '?';
+    btn.innerHTML = `<span class="auth-avatar">${initials}</span> <span id="nav-auth-label">${authState.email}</span>`;
+    btn.onclick = openMyBookings;
+  } else if (authState.mode === 'guest') {
+    btn.innerHTML = `<span id="nav-auth-label">Gäst · Mina bokningar</span>`;
+    btn.onclick = openMyBookings;
+  } else {
+    btn.innerHTML = `<span id="nav-auth-label">Logga in</span>`;
+    btn.onclick = openAuthModal;
+  }
+}
+
+// ── MODAL HELPERS ──────────────────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ── AUTH MODAL ─────────────────────────────────────────────────────────────
+function openAuthModal() {
+  clearAuthError();
+  openModal('auth-modal');
+}
+
+function switchAuthTab(tab, btn) {
+  document.querySelectorAll('#auth-tabs .modal-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('auth-pane-login').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('auth-pane-register').style.display = tab === 'register' ? '' : 'none';
+  clearAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+function clearAuthError() {
+  document.getElementById('auth-error').classList.remove('visible');
+}
+
+async function doLogin() {
+  clearAuthError();
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  if (!email || !pw) { showAuthError('Fyll i e-post och lösenord.'); return; }
+
+  const btn = document.getElementById('login-submit');
+  btn.disabled = true; btn.textContent = 'Loggar in…';
+
+  try {
+    const res = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pw })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError(data.error || 'Inloggningen misslyckades.'); return; }
+
+    authState.mode = 'user';
+    authState.userId = data.user_id;
+    authState.email = data.email;
+    saveAuthState();
+    updateNavAuth();
+    closeModal('auth-modal');
+    toast(`✅ Välkommen, ${data.email}!`);
+  } catch(e) {
+    showAuthError('Nätverksfel. Är servern igång?');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Logga in →';
+  }
+}
+
+async function doRegister() {
+  clearAuthError();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-pw').value;
+  const pw2 = document.getElementById('reg-pw2').value;
+
+  if (!email || !pw) { showAuthError('Fyll i e-post och lösenord.'); return; }
+  if (pw !== pw2) { showAuthError('Lösenorden stämmer inte överens.'); return; }
+  if (pw.length < 6) { showAuthError('Lösenordet måste vara minst 6 tecken.'); return; }
+
+  const btn = document.getElementById('reg-submit');
+  btn.disabled = true; btn.textContent = 'Skapar konto…';
+
+  try {
+    const res = await fetch('/api/user/register', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pw })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError(data.error || 'Registreringen misslyckades.'); return; }
+
+    authState.mode = 'user';
+    authState.userId = data.user_id;
+    authState.email = data.email;
+    saveAuthState();
+    updateNavAuth();
+    closeModal('auth-modal');
+    toast(`✅ Konto skapat! Välkommen, ${data.email}!`);
+  } catch(e) {
+    showAuthError('Nätverksfel. Är servern igång?');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Skapa konto →';
+  }
+}
+
+function continueAsGuest() {
+  authState.mode = 'guest';
+  saveAuthState();
+  updateNavAuth();
+  closeModal('auth-modal');
+  toast('Fortsätter som gäst — dina bokningar sparas på denna enhet.');
+}
+
+function logout() {
+  authState.mode = null;
+  authState.userId = null;
+  authState.email = null;
+  // Keep guestToken and guestToken mode cleared — they can still see guest bookings via the guest token
+  saveAuthState();
+  updateNavAuth();
+  closeModal('my-bookings-modal');
+  toast('Du har loggat ut.');
+}
+
+// ── MY BOOKINGS ────────────────────────────────────────────────────────────
+async function openMyBookings() {
+  // Show modal
+  openModal('my-bookings-modal');
+
+  const userBar = document.getElementById('my-bookings-user-bar');
+  const subtitle = document.getElementById('my-bookings-subtitle');
+  const emailEl = document.getElementById('my-bookings-user-email');
+
+  if (authState.mode === 'user') {
+    userBar.style.display = 'flex';
+    emailEl.textContent = authState.email;
+    subtitle.textContent = 'Dina bokningar kopplade till ditt konto';
+  } else {
+    // Guest
+    userBar.style.display = 'none';
+    subtitle.textContent = 'Bokningar gjorda på denna enhet';
+  }
+
+  await loadMyBookings();
+}
+
+async function loadMyBookings() {
+  const list = document.getElementById('my-bookings-list');
+  list.innerHTML = '<div class="my-bookings-empty">Laddar…</div>';
+
+  try {
+    let url;
+    if (authState.mode === 'user') {
+      url = `/api/my-bookings?user_id=${encodeURIComponent(authState.userId)}`;
+    } else {
+      url = `/api/my-bookings?guest_token=${encodeURIComponent(authState.guestToken)}`;
+    }
+
+    const res = await fetch(url);
+    const bookings = await res.json();
+
+    if (!bookings.length) {
+      list.innerHTML = '<div class="my-bookings-empty">Du har inga bokningar ännu.<br><br><a href="#booking" onclick="closeModal(\'my-bookings-modal\')" style="color:var(--accent);font-weight:600;">Boka nu →</a></div>';
+      return;
+    }
+
+    const today = new Date().toISOString().slice(0,10);
+    list.innerHTML = bookings.map(b => {
+      const isPast = b.date < today;
+      return `<div class="my-booking-card" style="${isPast?'opacity:0.6;':''}">
+        <div class="my-booking-info">
+          <div class="my-booking-date">${formatDateLabel(b.date)} kl ${b.time}</div>
+          <div class="my-booking-sub">
+            <span>📍 ${escHtml(b.address)}</span>
+            ${b.district ? `<span>· ${escHtml(b.district)}</span>` : ''}
+          </div>
+          <span class="my-booking-service">${escHtml(b.service)}</span>
+          ${b.notes ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:4px;font-style:italic;">"${escHtml(b.notes)}"</div>` : ''}
+          <div style="font-size:0.68rem;color:var(--muted-2);font-family:monospace;margin-top:4px;">${b.id}</div>
+        </div>
+        ${!isPast ? `<button class="my-booking-delete" onclick="cancelMyBooking('${b.id.replace(/'/g,"\\'")}')">Avboka</button>` : '<span style="font-size:0.75rem;color:var(--muted-2);">Klar</span>'}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="my-bookings-empty" style="color:var(--error);">Kunde inte ladda bokningar.</div>';
+  }
+}
+
+async function cancelMyBooking(id) {
+  if (!confirm('Vill du avboka denna tid?')) return;
+
+  const body = authState.mode === 'user'
+    ? { user_id: authState.userId }
+    : { guest_token: authState.guestToken };
+
+  try {
+    const res = await fetch(`/api/my-bookings/${id}`, {
+      method: 'DELETE',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast('Bokning avbokad.');
+      await loadMyBookings();
+      await loadSlots();
+      buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
+    } else {
+      toast(data.error || 'Kunde inte avboka.', 'error');
+    }
+  } catch(e) {
+    toast('Nätverksfel.', 'error');
+  }
+}
 
 // ── TOAST ──────────────────────────────────────────────────────────────────
 function toast(msg, type='success') {
@@ -1575,7 +1331,6 @@ function buildCalendar(containerId, month, year, onDayClick, isAdmin=false) {
     const clickable = (!isPast || isAdmin) ? `onclick="${isAdmin?'adminDayClick':'dayClick'}('${dateStr}')"` : '';
     html += `<div class="${cls}" data-date="${dateStr}" ${clickable}>${d}</div>`;
   }
-
   html += `</div>`;
   container.innerHTML = html;
 }
@@ -1613,22 +1368,22 @@ async function loadTimeSlots(dateStr) {
   const grid = document.getElementById('time-slots-grid');
   document.getElementById('selected-date-label').textContent = dateStr;
   area.style.display = 'block';
-  grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">Loading…</div>';
+  grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">Laddar…</div>';
 
   const res = await fetch(`/api/availability?date=${dateStr}`);
   const slots = await res.json();
 
   if (!slots.length) {
-    grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">No slots available on this date.</div>';
+    grid.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;">Inga lediga tider detta datum.</div>';
     return;
   }
 
   grid.innerHTML = slots.map(s => {
     const avail = s.available > 0;
-    const district = (s.district || '').trim() || 'Ej angivet område';
+    const district = (s.district || '').trim() || 'Ej angivet';
     return `<button class="time-slot-btn${selectedTime===s.time?' selected':''}"
       ${avail ? `onclick="selectTime('${s.time}', '${encodeURIComponent(district)}')"` : 'disabled'}
-      title="${s.booked}/${s.capacity} booked">
+      title="${s.booked}/${s.capacity} bokade">
       <div class="slot-time">${s.time}</div>
       <div class="slot-avail">${avail ? s.available+' platser kvar' : 'Fullbokad'}</div>
       <div class="slot-district">${district}</div>
@@ -1640,7 +1395,6 @@ function selectTime(time, encodedDistrict) {
   selectedTime = time;
   selectedDistrict = decodeURIComponent(encodedDistrict || '');
   updateSummary();
-  // Re-render slots to show selection
   document.querySelectorAll('.time-slot-btn').forEach(b => {
     b.classList.toggle('selected', b.querySelector('.slot-time').textContent === time);
   });
@@ -1651,11 +1405,9 @@ function updateSummary() {
   const t = document.getElementById('summary-text');
   if (selectedDate && selectedTime) {
     s.classList.add('visible');
-    if (selectedDistrict) {
-      t.textContent = `${selectedDate} kl ${selectedTime} (${selectedDistrict})`;
-    } else {
-      t.textContent = `${selectedDate} kl ${selectedTime}`;
-    }
+    t.textContent = selectedDistrict
+      ? `${selectedDate} kl ${selectedTime} (${selectedDistrict})`
+      : `${selectedDate} kl ${selectedTime}`;
   } else {
     s.classList.remove('visible');
   }
@@ -1668,21 +1420,35 @@ async function submitBooking() {
   const service = document.getElementById('f-service').value;
   const notes = document.getElementById('f-notes').value.trim();
 
-  if (!selectedDate || !selectedTime) { toast('Please select a date and time.', 'error'); return; }
-  if (!name || !phone || !address || !service) { toast('Please fill in all required fields.', 'error'); return; }
+  if (!selectedDate || !selectedTime) { toast('Välj datum och tid.', 'error'); return; }
+  if (!name || !phone || !address || !service) { toast('Fyll i alla obligatoriska fält.', 'error'); return; }
+
+  // Prompt login if not authenticated at all
+  if (!authState.mode) {
+    if (confirm('Vill du logga in eller skapa konto för att se dina bokningar? Klicka "Avbryt" för att fortsätta som gäst.')) {
+      openAuthModal();
+      return;
+    } else {
+      continueAsGuest();
+    }
+  }
 
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'Booking…';
+  btn.disabled = true; btn.textContent = 'Bokar…';
+
+  const payload = { name, phone, address, service, date: selectedDate, time: selectedTime, notes };
+  if (authState.mode === 'user') payload.user_id = authState.userId;
+  else payload.guest_token = authState.guestToken;
 
   try {
     const res = await fetch('/api/bookings', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ name, phone, address, service, date: selectedDate, time: selectedTime, notes })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (data.success) {
-      toast(`✅ Booking confirmed! ID: ${data.booking_id}`);
+      toast(`✅ Bokning bekräftad! ID: ${data.booking_id}`);
       document.getElementById('f-name').value='';
       document.getElementById('f-phone').value='';
       document.getElementById('f-address').value='';
@@ -1694,19 +1460,19 @@ async function submitBooking() {
       buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
       document.getElementById('time-slots-area').style.display='none';
     } else {
-      toast(data.error || 'Booking failed.', 'error');
+      toast(data.error || 'Bokning misslyckades.', 'error');
     }
   } catch(e) {
-    toast('Network error. Is the server running?', 'error');
+    toast('Nätverksfel. Är servern igång?', 'error');
   }
 
-  btn.disabled = false; btn.textContent = 'Confirm Booking';
+  btn.disabled = false; btn.textContent = 'Bekräfta bokning';
 }
 
 // ── ADMIN ──────────────────────────────────────────────────────────────────
 async function adminLogin() {
   const pw = document.getElementById('admin-pw').value;
-  if (!pw) { toast('Enter a password.', 'error'); return; }
+  if (!pw) { toast('Ange lösenord.', 'error'); return; }
   try {
     const res = await fetch('/api/admin/login', {
       method: 'POST',
@@ -1714,17 +1480,14 @@ async function adminLogin() {
       body: JSON.stringify({ admin_password: pw })
     });
     const data = await res.json();
-    if (!res.ok || !data.success) {
-      toast(data.error || 'Invalid admin password.', 'error');
-      return;
-    }
+    if (!res.ok || !data.success) { toast(data.error || 'Fel lösenord.', 'error'); return; }
     adminPw = pw;
     document.getElementById('admin-login-form').style.display = 'none';
     document.getElementById('admin-panel').classList.add('visible');
     initAdminCal();
     loadAdminBookings();
-  } catch (e) {
-    toast('Could not verify admin password.', 'error');
+  } catch(e) {
+    toast('Kunde inte verifiera lösenord.', 'error');
   }
 }
 
@@ -1736,7 +1499,6 @@ function switchAdminTab(pane, btn) {
   if (pane === 'bookings') loadAdminBookings();
 }
 
-// ── ADMIN CALENDAR ─────────────────────────────────────────────────────────
 function initAdminCal() {
   const now = new Date();
   adminCalMonth = { month: now.getMonth(), year: now.getFullYear() };
@@ -1766,7 +1528,6 @@ function renderSlotsEditor() {
   document.getElementById('admin-date-title').textContent = `Tider för ${adminSelectedDate}`;
   document.getElementById('btn-add-slot').style.display = '';
   document.getElementById('btn-save-slots').style.display = '';
-
   adminEditSlots = JSON.parse(JSON.stringify(slotsCache[adminSelectedDate] || []));
   renderSlotRows();
 }
@@ -1776,7 +1537,7 @@ function renderSlotRows() {
   container.innerHTML = adminEditSlots.map((s, i) => `
     <div class="slot-row" id="slot-row-${i}">
       <input type="time" value="${s.time}" onchange="adminEditSlots[${i}].time=this.value">
-      <label>Capacity:</label>
+      <label>Kapacitet:</label>
       <input type="number" min="1" max="20" value="${s.capacity}" style="width:70px;" onchange="adminEditSlots[${i}].capacity=parseInt(this.value)">
       <label>Område:</label>
       <input type="text" value="${s.district || ''}" placeholder="t.ex. Centrum" style="min-width:130px;" onchange="adminEditSlots[${i}].district=this.value.trim()">
@@ -1800,12 +1561,8 @@ async function saveSlots() {
   const newSlots = JSON.parse(JSON.stringify(slotsCache));
   newSlots[adminSelectedDate] = adminEditSlots
     .filter(s => s.time && s.capacity)
-    .map(s => ({
-      time: s.time,
-      capacity: Math.max(1, parseInt(s.capacity, 10) || 1),
-      district: (s.district || '').trim()
-    }))
-    .sort((a, b) => a.time.localeCompare(b.time));
+    .map(s => ({ time: s.time, capacity: Math.max(1, parseInt(s.capacity,10)||1), district: (s.district||'').trim() }))
+    .sort((a,b) => a.time.localeCompare(b.time));
 
   const res = await fetch('/api/slots', {
     method: 'POST',
@@ -1814,12 +1571,12 @@ async function saveSlots() {
   });
   const data = await res.json();
   if (data.success) {
-    toast('Slots saved!');
+    toast('Tider sparade!');
     await loadSlots();
     buildCalendar('admin-calendar', adminCalMonth.month, adminCalMonth.year, adminDayClick, true);
     buildCalendar('booking-calendar', currentCalMonth.month, currentCalMonth.year, dayClick);
   } else {
-    toast(data.error || 'Error saving slots.', 'error');
+    toast(data.error || 'Fel vid sparning.', 'error');
   }
 }
 
@@ -1849,7 +1606,6 @@ function populateDateFilter() {
 }
 
 function formatDateLabel(dateStr) {
-  // e.g. "2025-06-14" → "Lör 14 jun"
   try {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('sv-SE', { weekday:'short', day:'numeric', month:'short' });
@@ -1871,7 +1627,6 @@ function renderGroupedBookings() {
     return true;
   });
 
-  // Summary bar
   const totalCount = filtered.length;
   const dateCount = new Set(filtered.map(b => b.date)).size;
   summaryBar.innerHTML = totalCount === 0 ? '' : `
@@ -1886,12 +1641,8 @@ function renderGroupedBookings() {
     return;
   }
 
-  // Group by date, sort dates ascending, then sort bookings within each date by time
   const groups = {};
-  filtered.forEach(b => {
-    if (!groups[b.date]) groups[b.date] = [];
-    groups[b.date].push(b);
-  });
+  filtered.forEach(b => { if (!groups[b.date]) groups[b.date] = []; groups[b.date].push(b); });
   const sortedDates = Object.keys(groups).sort();
   sortedDates.forEach(d => groups[d].sort((a,b) => a.time.localeCompare(b.time)));
 
@@ -1906,6 +1657,11 @@ function renderGroupedBookings() {
     const cardsHtml = bookings.map(b => {
       const district = (b.district || '').trim();
       const safeId = b.id.replace(/'/g, "\\'");
+      const ownerTag = b.user_id
+        ? `<span style="font-size:0.68rem;color:rgba(200,146,42,0.8);background:rgba(200,146,42,0.1);border-radius:4px;padding:1px 6px;">konto</span>`
+        : b.guest_token
+          ? `<span style="font-size:0.68rem;color:rgba(160,160,200,0.7);background:rgba(160,160,200,0.08);border-radius:4px;padding:1px 6px;">gäst</span>`
+          : '';
       return `
         <div class="booking-card">
           <div class="booking-card-time">
@@ -1913,7 +1669,7 @@ function renderGroupedBookings() {
             ${district ? `<span class="booking-district-pill" title="${district}">${district}</span>` : ''}
           </div>
           <div class="booking-card-info">
-            <div class="booking-card-name">${escHtml(b.name)}</div>
+            <div class="booking-card-name">${escHtml(b.name)} ${ownerTag}</div>
             <div class="booking-card-sub">
               <span>📞 ${escHtml(b.phone)}</span>
               <span>📍 ${escHtml(b.address || '—')}</span>
@@ -1934,9 +1690,7 @@ function renderGroupedBookings() {
     return `
       <div class="date-group" id="dg-${date}" style="${pastStyle}">
         <div class="date-group-header" onclick="toggleDateGroup('${date}')">
-          <div class="date-group-title">
-            📅 ${label}${todayBadge}
-          </div>
+          <div class="date-group-title">📅 ${label}${todayBadge}</div>
           <div class="date-group-meta">
             <span class="date-group-badge">${bookings.length} bokning${bookings.length !== 1 ? 'ar' : ''}</span>
             <span>${bookings[0].time}–${bookings[bookings.length-1].time}</span>
@@ -2007,7 +1761,7 @@ function toggleFaq(btn) {
   }
 }
 
-// ── FADE IN ON SCROLL ─────────────────────────────────────────────────────
+// ── FADE IN ────────────────────────────────────────────────────────────────
 function initFadeIn() {
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -2017,6 +1771,8 @@ function initFadeIn() {
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 (async function init() {
+  loadAuthState();
+  updateNavAuth();
   await loadSlots();
   initBookingCal();
   initFadeIn();
