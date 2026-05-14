@@ -722,9 +722,6 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           <input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
         </div>
         <button class="modal-submit" id="login-submit" onclick="doLogin()">Logga in →</button>
-
-        <div class="modal-divider"><span>eller</span></div>
-        <button class="modal-guest-btn" onclick="continueAsGuest()">Fortsätt som gäst</button>
       </div>
 
       <!-- Register form -->
@@ -742,9 +739,6 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           <input type="password" id="reg-pw2" placeholder="••••••••" onkeydown="if(event.key==='Enter') doRegister()">
         </div>
         <button class="modal-submit" id="reg-submit" onclick="doRegister()">Skapa konto →</button>
-
-        <div class="modal-divider"><span>eller</span></div>
-        <button class="modal-guest-btn" onclick="continueAsGuest()">Fortsätt som gäst</button>
       </div>
     </div>
   </div>
@@ -761,9 +755,19 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <button class="modal-close" onclick="closeModal('my-bookings-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="user-info-bar" id="my-bookings-user-bar">
+      <!-- Shown when logged in -->
+      <div class="user-info-bar" id="my-bookings-user-bar" style="display:none;">
         <span class="user-email" id="my-bookings-user-email"></span>
         <button class="user-logout-btn" onclick="logout()">Logga ut</button>
+      </div>
+      <!-- Shown for guests: upsell to create account -->
+      <div id="my-bookings-guest-bar" style="display:none; margin-bottom:20px; background:var(--cream); border:1px solid var(--border-strong); border-radius:12px; padding:16px 18px;">
+        <div style="font-size:0.82rem; font-weight:600; margin-bottom:6px; color:var(--ink);">Dina bokningar sparas på denna enhet</div>
+        <div style="font-size:0.78rem; color:var(--muted); margin-bottom:12px; line-height:1.6;">Skapa ett konto för att se dina bokningar från valfri enhet och hålla koll på dem var du än är.</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="modal-submit" style="flex:1; margin-top:0; padding:10px 16px; font-size:0.82rem;" onclick="closeModal('my-bookings-modal'); openAuthModal('register')">Skapa konto</button>
+          <button class="modal-guest-btn" style="flex:1; padding:10px 16px; font-size:0.82rem;" onclick="closeModal('my-bookings-modal'); openAuthModal('login')">Logga in</button>
+        </div>
       </div>
       <div id="my-bookings-list" class="my-bookings-list">
         <div class="my-bookings-empty">Laddar…</div>
@@ -777,9 +781,9 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
   <div class="hero-content">
     <div class="hero-eyebrow">
       <span class="hero-eyebrow-line"></span>
-      <span class="hero-eyebrow-text">Lokal biltvätt · Malmö</span>
+      <span class="hero-eyebrow-text">Professionell biltvätt · Malmö</span>
     </div>
-    <h1>Ren bil direkt <br>på din <em>parkering<em>.<br></h1>
+    <h1>Vi kommer till ditt<br>område och gör<br>bilen <em>redo</em>.</h1>
     <p class="hero-sub">Vi är två unga killar som startat vårt egna företag där vi erbjuder noggrann handtvätt på plats — med vattensnåla och miljövänliga metoder anpassade för uppfartstvätt. Tack för att du väljer lokalt.</p>
     <div class="hero-actions">
       <a href="#booking" class="btn btn-primary">Boka tvätt →</a>
@@ -859,7 +863,7 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           Hur betalar jag?
           <span class="faq-toggle">+</span>
         </button>
-        <div class="faq-a">Betalning sker efter avslutat arbete, antingen via Swish eller kontant. Vi tar inte betalt i förväg.</div>
+        <div class="faq-a">Betalning sker på plats efter avslutat arbete, antingen via Swish eller kontant. Vi tar inte betalt i förväg.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
@@ -870,10 +874,10 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          Finns det några möjliga rabatter?
+          Vad händer om det regnar?
           <span class="faq-toggle">+</span>
         </button>
-        <div class="faq-a">20% rabatt ges för betalningar med crypto till någon av adresserna: BTC: bc1qsyszz2kd3wh6jq87sxlk9dqzmk3r8f24t3nyuu, SOL: APuqXYiRMkeAWF9Ao97sxvfUR8rfGvftyV3k985dvBHD.</div>
+        <div class="faq-a">Lätt regn påverkar inte arbetet — vi kommer ändå och slutresultatet blir lika bra. Vid kraftigt oväder kontaktar vi dig för att boka om till närmaste lediga tid utan extra kostnad.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
@@ -905,7 +909,7 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
 <section class="booking" id="booking">
   <div class="section-tag">Resarvera Din Tid</div>
   <h2 class="section-title">Boka en Biltvätt</h2>
-  <p class="section-sub">Boka tid från tillgängliga tider och distrikt. Betalning görs på plats via swish eller kontant. (20% rabatt på betalningar via crypto) <br>BTC: bc1qsyszz2kd3wh6jq87sxlk9dqzmk3r8f24t3nyuu<br>SOL: APuqXYiRMkeAWF9Ao97sxvfUR8rfGvftyV3k985dvBHD</p>
+  <p class="section-sub">Boka tid från tillgängliga tider och distrikt. Betalning görs på plats via swish eller kontant.</p>
 
   <div class="booking-layout">
     <div>
@@ -1046,8 +1050,12 @@ function loadAuthState() {
   // Always ensure a guest token exists for this device
   if (!authState.guestToken) {
     authState.guestToken = 'GT' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-    saveAuthState();
   }
+  // Guest is the default — no login required to use the site
+  if (!authState.mode) {
+    authState.mode = 'guest';
+  }
+  saveAuthState();
 }
 
 function saveAuthState() {
@@ -1056,17 +1064,16 @@ function saveAuthState() {
 
 function updateNavAuth() {
   const btn = document.getElementById('nav-auth-btn');
-  const label = document.getElementById('nav-auth-label');
   if (authState.mode === 'user') {
     const initials = authState.email ? authState.email[0].toUpperCase() : '?';
-    btn.innerHTML = `<span class="auth-avatar">${initials}</span> <span id="nav-auth-label">${authState.email}</span>`;
+    btn.innerHTML = `<span class="auth-avatar">${initials}</span> <span>Mina bokningar</span>`;
     btn.onclick = openMyBookings;
-  } else if (authState.mode === 'guest') {
-    btn.innerHTML = `<span id="nav-auth-label">Gäst · Mina bokningar</span>`;
-    btn.onclick = openMyBookings;
+    btn.title = authState.email;
   } else {
-    btn.innerHTML = `<span id="nav-auth-label">Logga in</span>`;
-    btn.onclick = openAuthModal;
+    // Guest (default) — show bookings icon + label
+    btn.innerHTML = `<span class="auth-icon">📋</span> <span>Mina bokningar</span>`;
+    btn.onclick = openMyBookings;
+    btn.title = 'Se dina bokningar eller logga in';
   }
 }
 
@@ -1088,8 +1095,19 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 // ── AUTH MODAL ─────────────────────────────────────────────────────────────
-function openAuthModal() {
+function openAuthModal(tab) {
   clearAuthError();
+  // Default to login tab, but accept 'register' to jump straight there
+  if (tab === 'register') {
+    document.querySelectorAll('#auth-tabs .modal-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#auth-tabs .modal-tab')[1].classList.add('active');
+    document.getElementById('auth-pane-login').style.display = 'none';
+    document.getElementById('auth-pane-register').style.display = '';
+  } else {
+    document.querySelectorAll('#auth-tabs .modal-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+    document.getElementById('auth-pane-login').style.display = '';
+    document.getElementById('auth-pane-register').style.display = 'none';
+  }
   openModal('auth-modal');
 }
 
@@ -1187,10 +1205,9 @@ function continueAsGuest() {
 }
 
 function logout() {
-  authState.mode = null;
+  authState.mode = 'guest';
   authState.userId = null;
   authState.email = null;
-  // Keep guestToken and guestToken mode cleared — they can still see guest bookings via the guest token
   saveAuthState();
   updateNavAuth();
   closeModal('my-bookings-modal');
@@ -1199,20 +1216,21 @@ function logout() {
 
 // ── MY BOOKINGS ────────────────────────────────────────────────────────────
 async function openMyBookings() {
-  // Show modal
   openModal('my-bookings-modal');
 
   const userBar = document.getElementById('my-bookings-user-bar');
+  const guestBar = document.getElementById('my-bookings-guest-bar');
   const subtitle = document.getElementById('my-bookings-subtitle');
   const emailEl = document.getElementById('my-bookings-user-email');
 
   if (authState.mode === 'user') {
     userBar.style.display = 'flex';
+    guestBar.style.display = 'none';
     emailEl.textContent = authState.email;
-    subtitle.textContent = 'Dina bokningar kopplade till ditt konto';
+    subtitle.textContent = 'Bokningar kopplade till ditt konto';
   } else {
-    // Guest
     userBar.style.display = 'none';
+    guestBar.style.display = 'block';
     subtitle.textContent = 'Bokningar gjorda på denna enhet';
   }
 
@@ -1422,16 +1440,6 @@ async function submitBooking() {
 
   if (!selectedDate || !selectedTime) { toast('Välj datum och tid.', 'error'); return; }
   if (!name || !phone || !address || !service) { toast('Fyll i alla obligatoriska fält.', 'error'); return; }
-
-  // Prompt login if not authenticated at all
-  if (!authState.mode) {
-    if (confirm('Vill du logga in eller skapa konto för att se dina bokningar? Klicka "Avbryt" för att fortsätta som gäst.')) {
-      openAuthModal();
-      return;
-    } else {
-      continueAsGuest();
-    }
-  }
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'Bokar…';
