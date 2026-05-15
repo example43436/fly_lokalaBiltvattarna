@@ -5,6 +5,9 @@ import os
 import json
 import hashlib
 import secrets
+import urllib.request
+import urllib.parse
+import base64
 from datetime import datetime
 from contextlib import contextmanager
 
@@ -17,6 +20,15 @@ DB_FILE  = os.environ.get("APP_DB_FILE",  os.path.join(DATA_DIR, "sparkwash.db")
 CSV_FILE = os.environ.get("APP_CSV_FILE", os.path.join(DATA_DIR, "bookings.csv"))
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
+
+# 46elks credentials — set via:
+#   fly secrets set ELKS_API_USERNAME=u... ELKS_API_PASSWORD=... ELKS_FROM=SparkWash
+ELKS_API_USERNAME = os.environ.get("ELKS_API_USERNAME", "udc7b14e696f632e40208132155347b50")
+ELKS_API_PASSWORD = os.environ.get("ELKS_API_PASSWORD", "Agg0ac!!4s")
+ELKS_FROM         = os.environ.get("ELKS_FROM", "LB")  # max 11 chars, no spaces
+
+# Customers must cancel at least this many minutes before the booking start
+CANCEL_WINDOW_MINUTES = 60
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -57,34 +69,36 @@ def init_db():
             );
 
             CREATE TABLE IF NOT EXISTS bookings (
-                id          TEXT PRIMARY KEY,
-                name        TEXT NOT NULL,
-                phone       TEXT NOT NULL,
-                address     TEXT NOT NULL,
-                district    TEXT NOT NULL DEFAULT '',
-                service     TEXT NOT NULL,
-                date        TEXT NOT NULL,
-                time        TEXT NOT NULL,
-                notes       TEXT NOT NULL DEFAULT '',
-                created_at  TEXT NOT NULL,
-                user_id     TEXT,
-                guest_token TEXT
+                id            TEXT PRIMARY KEY,
+                name          TEXT NOT NULL,
+                phone         TEXT NOT NULL,
+                address       TEXT NOT NULL,
+                district      TEXT NOT NULL DEFAULT '',
+                service       TEXT NOT NULL,
+                vehicle_type  TEXT NOT NULL DEFAULT '',
+                date          TEXT NOT NULL,
+                time          TEXT NOT NULL,
+                notes         TEXT NOT NULL DEFAULT '',
+                created_at    TEXT NOT NULL,
+                user_id       TEXT,
+                guest_token   TEXT
             );
         """)
-        # Migration: add user_id / guest_token columns if they don't exist yet
-        try:
-            db.execute("ALTER TABLE bookings ADD COLUMN user_id TEXT")
-        except Exception:
-            pass
-        try:
-            db.execute("ALTER TABLE bookings ADD COLUMN guest_token TEXT")
-        except Exception:
-            pass
+        # Safe migrations for existing databases
+        for col, definition in [
+            ("user_id",      "TEXT"),
+            ("guest_token",  "TEXT"),
+            ("vehicle_type", "TEXT NOT NULL DEFAULT ''"),
+        ]:
+            try:
+                db.execute(f"ALTER TABLE bookings ADD COLUMN {col} {definition}")
+            except Exception:
+                pass
 
 def migrate_from_json():
     """One-time import of old JSON data into SQLite."""
-    legacy_data = os.path.join(DATA_DIR, "app-data.json")
-    legacy_slots = os.path.join(DATA_DIR, "slots.json")
+    legacy_data     = os.path.join(DATA_DIR, "app-data.json")
+    legacy_slots    = os.path.join(DATA_DIR, "slots.json")
     legacy_bookings = os.path.join(DATA_DIR, "bookings.json")
 
     data = {"slots": {}, "bookings": []}
@@ -115,12 +129,59 @@ def migrate_from_json():
         for b in data["bookings"]:
             db.execute(
                 """INSERT OR IGNORE INTO bookings
-                   (id, name, phone, address, district, service, date, time, notes, created_at)
-                   VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                   (id, name, phone, address, district, service, vehicle_type,
+                    date, time, notes, created_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
                 (b["id"], b["name"], b["phone"], b["address"],
-                 b.get("district",""), b["service"], b["date"], b["time"],
-                 b.get("notes",""), b.get("created_at", datetime.now().isoformat()))
+                 b.get("district", ""), b["service"], b.get("vehicle_type", ""),
+                 b["date"], b["time"], b.get("notes", ""),
+                 b.get("created_at", datetime.now().isoformat()))
             )
+
+# ── SMS via 46elks ────────────────────────────────────────────────────────────
+
+def send_sms(to_number: str, message: str):
+    """Send an SMS via 46elks. Logs on failure but never crashes the caller."""
+    if not ELKS_API_USERNAME or not ELKS_API_PASSWORD:
+        app.logger.warning("46elks credentials not configured — SMS skipped.")
+        return
+
+    # Normalise Swedish mobile numbers: 07X → +467X
+    number = to_number.strip().replace(" ", "").replace("-", "")
+    if number.startswith("0"):
+        number = "+46" + number[1:]
+
+    payload = urllib.parse.urlencode({
+        "from":    ELKS_FROM,
+        "to":      number,
+        "message": message,
+    }).encode()
+
+    req = urllib.request.Request(
+        "https://api.46elks.com/a1/sms",
+        data=payload,
+        method="POST",
+    )
+    credentials = f"{ELKS_API_USERNAME}:{ELKS_API_PASSWORD}"
+    req.add_header("Authorization", "Basic " + base64.b64encode(credentials.encode()).decode())
+
+    try:
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            app.logger.info(f"46elks: {resp.status} {resp.read()[:120]}")
+    except Exception as exc:
+        app.logger.error(f"46elks SMS failed: {exc}")
+
+
+def build_confirmation_sms(booking: dict) -> str:
+    vehicle = f" ({booking['vehicle_type']})" if booking.get("vehicle_type") else ""
+    return (
+        f"Hej {booking['name']}! Din biltvätt är bokad ✅\n"
+        f"Datum: {booking['date']} kl {booking['time']}\n"
+        f"Tjänst: {booking['service']}{vehicle}\n"
+        f"Adress: {booking['address']}\n"
+        f"Boknings-ID: {booking['id']}\n"
+        f"Frågor? Ring 070-123 45 67"
+    )
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -132,11 +193,17 @@ def export_csv():
         rows = db.execute("SELECT * FROM bookings ORDER BY date, time").fetchall()
     if not rows:
         return
-    keys = ["id","name","phone","address","district","service","date","time","notes","created_at","user_id","guest_token"]
+    keys = ["id", "name", "phone", "address", "district", "service", "vehicle_type",
+            "date", "time", "notes", "created_at", "user_id", "guest_token"]
     with open(CSV_FILE, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
         writer.writeheader()
         writer.writerows([dict(r) for r in rows])
+
+def minutes_until_booking(date_str: str, time_str: str) -> float:
+    """Minutes remaining until the booking starts (negative = already past)."""
+    booking_dt = datetime.fromisoformat(f"{date_str}T{time_str}:00")
+    return (booking_dt - datetime.now()).total_seconds() / 60
 
 # ── static ────────────────────────────────────────────────────────────────────
 
@@ -148,8 +215,8 @@ def index():
 
 @app.route("/api/user/register", methods=["POST"])
 def register():
-    data = request.json or {}
-    email = (data.get("email") or "").strip().lower()
+    data     = request.json or {}
+    email    = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
 
     if not email or not password:
@@ -171,8 +238,8 @@ def register():
 
 @app.route("/api/user/login", methods=["POST"])
 def user_login():
-    data = request.json or {}
-    email = (data.get("email") or "").strip().lower()
+    data     = request.json or {}
+    email    = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
 
     with get_db() as db:
@@ -190,7 +257,7 @@ def user_login():
 
 @app.route("/api/my-bookings", methods=["GET"])
 def get_my_bookings():
-    user_id = request.args.get("user_id")
+    user_id     = request.args.get("user_id")
     guest_token = request.args.get("guest_token")
 
     if not user_id and not guest_token:
@@ -206,12 +273,18 @@ def get_my_bookings():
                 "SELECT * FROM bookings WHERE guest_token=? ORDER BY date, time", (guest_token,)
             ).fetchall()
 
-    return jsonify([dict(r) for r in rows])
+    result = []
+    for r in rows:
+        b = dict(r)
+        b["can_cancel"] = minutes_until_booking(b["date"], b["time"]) >= CANCEL_WINDOW_MINUTES
+        result.append(b)
+
+    return jsonify(result)
 
 @app.route("/api/my-bookings/<booking_id>", methods=["DELETE"])
 def delete_my_booking(booking_id):
-    data = request.json or {}
-    user_id = data.get("user_id")
+    data        = request.json or {}
+    user_id     = data.get("user_id")
     guest_token = data.get("guest_token")
 
     if not user_id and not guest_token:
@@ -230,6 +303,14 @@ def delete_my_booking(booking_id):
         if not row:
             return jsonify({"error": "Booking not found or not yours"}), 404
 
+        mins_left = minutes_until_booking(row["date"], row["time"])
+        if mins_left < 0:
+            return jsonify({"error": "Denna bokning har redan passerat."}), 400
+        if mins_left < CANCEL_WINDOW_MINUTES:
+            return jsonify({
+                "error": f"Avbokning måste göras minst {CANCEL_WINDOW_MINUTES} minuter innan bokad tid."
+            }), 400
+
         db.execute("DELETE FROM bookings WHERE id=?", (booking_id,))
 
     export_csv()
@@ -240,12 +321,14 @@ def delete_my_booking(booking_id):
 @app.route("/api/slots", methods=["GET"])
 def get_slots():
     with get_db() as db:
-        rows = db.execute("SELECT date, time, capacity, district FROM slots ORDER BY date, time").fetchall()
+        rows = db.execute(
+            "SELECT date, time, capacity, district FROM slots ORDER BY date, time"
+        ).fetchall()
 
     slots = {}
     for r in rows:
         slots.setdefault(r["date"], []).append({
-            "time": r["time"],
+            "time":     r["time"],
             "capacity": r["capacity"],
             "district": r["district"],
         })
@@ -289,15 +372,17 @@ def get_bookings():
 
 @app.route("/api/bookings", methods=["POST"])
 def create_booking():
-    data = request.json or {}
+    data     = request.json or {}
     required = ["name", "phone", "address", "service", "date", "time"]
     for field in required:
         if not data.get(field):
             return jsonify({"error": f"Missing field: {field}"}), 400
 
-    date, time = data["date"], data["time"]
-    user_id = data.get("user_id") or None
-    guest_token = data.get("guest_token") or None
+    date         = data["date"]
+    time         = data["time"]
+    vehicle_type = (data.get("vehicle_type") or "").strip()
+    user_id      = data.get("user_id") or None
+    guest_token  = data.get("guest_token") or None
 
     with get_db() as db:
         slot = db.execute(
@@ -317,15 +402,29 @@ def create_booking():
         booking_id = f"BK{datetime.now().strftime('%Y%m%d%H%M%S%f')[:18]}"
         db.execute(
             """INSERT INTO bookings
-               (id, name, phone, address, district, service, date, time, notes, created_at, user_id, guest_token)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
+               (id, name, phone, address, district, service, vehicle_type,
+                date, time, notes, created_at, user_id, guest_token)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (booking_id, data["name"], data["phone"], data["address"],
-             slot["district"], data["service"], date, time,
-             data.get("notes", ""), datetime.now().isoformat(),
-             user_id, guest_token)
+             slot["district"], data["service"], vehicle_type,
+             date, time, data.get("notes", ""),
+             datetime.now().isoformat(), user_id, guest_token)
         )
 
     export_csv()
+
+    # Fire-and-forget SMS confirmation
+    send_sms(data["phone"], build_confirmation_sms({
+        "id":           booking_id,
+        "name":         data["name"],
+        "phone":        data["phone"],
+        "address":      data["address"],
+        "service":      data["service"],
+        "vehicle_type": vehicle_type,
+        "date":         date,
+        "time":         time,
+    }))
+
     return jsonify({"success": True, "booking_id": booking_id})
 
 @app.route("/api/bookings/<booking_id>", methods=["DELETE"])
@@ -355,10 +454,10 @@ def get_availability():
                 "SELECT COUNT(*) FROM bookings WHERE date=? AND time=?", (date, s["time"])
             ).fetchone()[0]
             result.append({
-                "time": s["time"],
-                "capacity": s["capacity"],
-                "district": s["district"],
-                "booked": taken,
+                "time":      s["time"],
+                "capacity":  s["capacity"],
+                "district":  s["district"],
+                "booked":    taken,
                 "available": s["capacity"] - taken,
             })
 
