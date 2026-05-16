@@ -24,7 +24,7 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 # 46elks credentials — set via:
 #   fly secrets set ELKS_API_USERNAME=u... ELKS_API_PASSWORD=... ELKS_FROM=SparkWash
 ELKS_API_USERNAME = os.environ.get("ELKS_API_USERNAME", "udc7b14e696f632e40208132155347b50")
-ELKS_API_PASSWORD = os.environ.get("ELKS_API_PASSWORD", "E85DB1A74D5A8FC5EDF9F18F7DEB2A5A​ ")
+ELKS_API_PASSWORD = os.environ.get("ELKS_API_PASSWORD", "E85DB1A74D5A8FC5EDF9F18F7DEB2A5A")
 ELKS_FROM         = os.environ.get("ELKS_FROM", "SparkWash")  # max 11 chars, no spaces
 
 # Customers must cancel at least this many minutes before the booking start
