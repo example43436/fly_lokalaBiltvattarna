@@ -797,7 +797,7 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <span class="hero-eyebrow-text">Lokal biltvätt · Malmö</span>
     </div>
     <h1>Ren bil direkt<br>på din <em>parkering</em>.<br></h1>
-    <p class="hero-sub">Vi är två unga killar som startat vårt egna biltvätt där vi erbjuder noggrann handtvätt på plats — med vattensnåla och miljövänliga metoder anpassade för uppfartstvätt. Tack för att du väljer lokalt.</p>
+    <p class="hero-sub">Vi är två unga killar som startat vårt egna företag där vi erbjuder noggrann handtvätt på plats — med vattensnåla och miljövänliga metoder anpassade för uppfartstvätt. Tack för att du väljer lokalt.</p>
     <div class="hero-actions">
       <a href="#booking" class="btn btn-primary">Boka tvätt →</a>
       <a href="#services" class="btn btn-outline">Våra tjänster</a>
@@ -844,13 +844,26 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <span class="service-num">02</span>
       <h3>Premium-tvätt</h3>
       <p>Invändigt och utvändigt — djupdammsugning, rengöring av paneler och mattor samt vård av interiören.</p>
-      <div class="service-price">549 kr</div>
+      <div class="service-price">499 kr</div>
     </div>
     <div class="service-card fade-up">
       <span class="service-num">03</span>
       <h3>Helrekond</h3>
       <p>Vårt mest kompletta paket: utvändigt, invändigt, motorrum och polering för ett lysande resultat.</p>
-      <div class="service-price">1999 kr</div>
+      <div class="service-price">899 kr</div>
+    </div>
+  </div>
+
+  <!-- Add-on banner -->
+  <div style="margin-top:0; border:1px solid var(--border-strong); border-top:none; background:white; padding:28px 36px; display:flex; align-items:center; gap:32px; flex-wrap:wrap;">
+    <div style="flex:1; min-width:220px;">
+      <div style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold); margin-bottom:8px;">Tillval · Lägg till vid bokning</div>
+      <h3 style="font-family:'Shippori Mincho',serif; font-size:1.2rem; font-weight:500; color:var(--ink); margin-bottom:6px;">Strålkastarrenovering</h3>
+      <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; font-weight:300;">Gula och repiga strålkastare slipas och poleras till klart glas — förbättrar både lysets räckvidd och bilens utseende. Kan kombineras med valfritt tvättpaket.</p>
+    </div>
+    <div style="text-align:right; flex-shrink:0;">
+      <div style="font-family:'Shippori Mincho',serif; font-size:1.5rem; font-weight:500; color:var(--ink);">+400 kr</div>
+      <div style="font-size:0.75rem; color:var(--muted); margin-top:4px;">per tillfälle</div>
     </div>
   </div>
 </section>
@@ -970,9 +983,19 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           <select id="f-service">
             <option value="">Välj en tjänst…</option>
             <option value="Express Wash">Express-tvätt — 299 kr</option>
-            <option value="Interior Detail">Premium-tvätt — 549 kr</option>
-            <option value="Full Detail">Helrekond — 1999 kr</option>
+            <option value="Interior Detail">Premium-tvätt — 499 kr</option>
+            <option value="Full Detail">Helrekond — 899 kr</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Tillval</label>
+          <label style="display:flex; align-items:flex-start; gap:12px; background:white; border:1.5px solid var(--border); border-radius:10px; padding:14px 16px; cursor:pointer; transition:border-color 0.2s;" id="headlight-label">
+            <input type="checkbox" id="f-headlight" style="margin-top:3px; accent-color:var(--accent); width:16px; height:16px; flex-shrink:0;" onchange="updateHeadlightLabel()">
+            <span>
+              <span style="font-size:0.92rem; font-weight:600; color:var(--ink); display:block;">Strålkastarrenovering</span>
+              <span style="font-size:0.8rem; color:var(--muted); line-height:1.6;">Slipning och polering av gula/repiga strålkastare. <strong style="color:var(--ink);">+400 kr</strong></span>
+            </span>
+          </label>
         </div>
         <div class="form-group">
           <label>Anteckningar (valfritt)</label>
@@ -1449,13 +1472,25 @@ function updateSummary() {
   }
 }
 
+function updateHeadlightLabel() {
+  const checked = document.getElementById('f-headlight').checked;
+  const label = document.getElementById('headlight-label');
+  label.style.borderColor = checked ? 'var(--accent)' : 'var(--border)';
+  label.style.background = checked ? '#EBF5EE' : 'white';
+}
+
 async function submitBooking() {
-  const name    = document.getElementById('f-name').value.trim();
-  const phone   = document.getElementById('f-phone').value.trim();
-  const address = document.getElementById('f-address').value.trim();
-  const vehicle = document.getElementById('f-vehicle').value;
-  const service = document.getElementById('f-service').value;
-  const notes   = document.getElementById('f-notes').value.trim();
+  const name       = document.getElementById('f-name').value.trim();
+  const phone      = document.getElementById('f-phone').value.trim();
+  const address    = document.getElementById('f-address').value.trim();
+  const vehicle    = document.getElementById('f-vehicle').value;
+  const service    = document.getElementById('f-service').value;
+  const headlight  = document.getElementById('f-headlight').checked;
+  const notesRaw   = document.getElementById('f-notes').value.trim();
+  // Append add-on to notes so it persists in the DB and SMS
+  const notes = headlight
+    ? (notesRaw ? notesRaw + ' | Tillval: Strålkastarrenovering (+400 kr)' : 'Tillval: Strålkastarrenovering (+400 kr)')
+    : notesRaw;
 
   if (!selectedDate || !selectedTime) { toast('Välj datum och tid.', 'error'); return; }
   if (!name || !phone || !address || !vehicle || !service) {
@@ -1480,13 +1515,16 @@ async function submitBooking() {
     });
     const data = await res.json();
     if (data.success) {
-      toast(`✅ Bokning bekräftad! Du får ett SMS med detaljer. ID: ${data.booking_id}`);
+      const addonMsg = headlight ? ' + strålkastarrenovering' : '';
+      toast(`✅ Bokning bekräftad${addonMsg}! Du får ett SMS med detaljer. ID: ${data.booking_id}`);
       document.getElementById('f-name').value='';
       document.getElementById('f-phone').value='';
       document.getElementById('f-address').value='';
       document.getElementById('f-vehicle').value='';
       document.getElementById('f-service').value='';
       document.getElementById('f-notes').value='';
+      document.getElementById('f-headlight').checked=false;
+      updateHeadlightLabel();
       selectedDate = null; selectedTime = null; selectedDistrict = '';
       updateSummary();
       await loadSlots();
@@ -1711,7 +1749,7 @@ function renderGroupedBookings() {
               <span>📍 ${escHtml(b.address || '—')}</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:0;">
-              <div class="booking-service-tag">${escHtml(b.service)}</div>${vehicleTag}
+              <div class="booking-service-tag">${escHtml(b.service)}</div>${vehicleTag}${b.notes && b.notes.includes('Strålkastarrenovering') ? '<span class="booking-vehicle-tag" style="background:rgba(200,146,42,0.2);color:var(--gold);">💡 Strålkastare +400 kr</span>' : ''}
             </div>
             ${b.notes ? `<div class="booking-card-notes">"${escHtml(b.notes)}"</div>` : ''}
             <div class="booking-card-id">${b.id}</div>
