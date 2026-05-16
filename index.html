@@ -289,6 +289,12 @@ nav ul a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
   border-radius: 6px; padding: 2px 8px;
   font-size: 0.75rem; font-weight: 600;
 }
+.my-booking-vehicle {
+  display: inline-block; margin-top: 4px; margin-left: 4px;
+  background: #f0ede6; color: var(--muted);
+  border-radius: 6px; padding: 2px 8px;
+  font-size: 0.75rem; font-weight: 600;
+}
 
 .my-booking-delete {
   background: none; border: 1.5px solid #e8c5bf;
@@ -544,7 +550,15 @@ section {
 .selected-summary { background: white; border-radius: 10px; padding: 14px 16px; border: 1.5px solid var(--accent); font-size: 0.88rem; margin-bottom: 20px; display: none; }
 .selected-summary.visible { display: block; }
 
-.form-submit { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.cancel-notice {
+  background: #fdf8f0; border: 1px solid #e8d9b5;
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 0.8rem; color: var(--muted);
+  margin-top: 14px; line-height: 1.6;
+}
+.cancel-notice strong { color: var(--ink); }
+
+.form-submit { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
 .form-submit:hover { background: var(--accent-light); }
 .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -630,6 +644,7 @@ section {
 .booking-card-name { font-size: 0.95rem; font-weight: 600; color: white; }
 .booking-card-sub { font-size: 0.8rem; color: rgba(255,255,255,0.45); display: flex; gap: 12px; flex-wrap: wrap; }
 .booking-service-tag { display: inline-block; background: rgba(26,107,60,0.25); color: #6FC98E; border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; margin-top: 4px; width: fit-content; }
+.booking-vehicle-tag { display: inline-block; background: rgba(200,146,42,0.15); color: var(--gold); border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; margin-top: 4px; margin-left: 4px; width: fit-content; }
 .booking-card-notes { font-size: 0.78rem; color: rgba(255,255,255,0.35); font-style: italic; margin-top: 3px; }
 .booking-card-id { font-size: 0.68rem; color: rgba(255,255,255,0.2); font-family: monospace; margin-top: 2px; }
 .booking-card-actions { padding: 16px 16px 16px 0; display: flex; align-items: flex-start; }
@@ -755,12 +770,10 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <button class="modal-close" onclick="closeModal('my-bookings-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <!-- Shown when logged in -->
       <div class="user-info-bar" id="my-bookings-user-bar" style="display:none;">
         <span class="user-email" id="my-bookings-user-email"></span>
         <button class="user-logout-btn" onclick="logout()">Logga ut</button>
       </div>
-      <!-- Shown for guests: upsell to create account -->
       <div id="my-bookings-guest-bar" style="display:none; margin-bottom:20px; background:var(--cream); border:1px solid var(--border-strong); border-radius:12px; padding:16px 18px;">
         <div style="font-size:0.82rem; font-weight:600; margin-bottom:6px; color:var(--ink);">Dina bokningar sparas på denna enhet</div>
         <div style="font-size:0.78rem; color:var(--muted); margin-bottom:12px; line-height:1.6;">Skapa ett konto för att se dina bokningar från valfri enhet och hålla koll på dem var du än är.</div>
@@ -783,7 +796,7 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
       <span class="hero-eyebrow-line"></span>
       <span class="hero-eyebrow-text">Lokal biltvätt · Malmö</span>
     </div>
-    <h1>Ren bil direkt<br>på din <em>parkering<em>.<br></h1>
+    <h1>Ren bil direkt<br>på din <em>parkering</em>.<br></h1>
     <p class="hero-sub">Vi är två unga killar som startat vårt egna företag där vi erbjuder noggrann handtvätt på plats — med vattensnåla och miljövänliga metoder anpassade för uppfartstvätt. Tack för att du väljer lokalt.</p>
     <div class="hero-actions">
       <a href="#booking" class="btn btn-primary">Boka tvätt →</a>
@@ -944,6 +957,15 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
           <input type="text" id="f-address" placeholder="Industrigatan 12, Malmö">
         </div>
         <div class="form-group">
+          <label>Fordonstyp</label>
+          <select id="f-vehicle">
+            <option value="">Välj fordonstyp…</option>
+            <option value="Standard">Standard (sedan, halvkombi, kombi)</option>
+            <option value="SUV">SUV / Crossover</option>
+            <option value="Van">Skåpbil / Minibuss</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>Tjänst</label>
           <select id="f-service">
             <option value="">Välj en tjänst…</option>
@@ -954,7 +976,10 @@ footer strong { color: rgba(255,255,255,0.7); font-weight: 500; }
         </div>
         <div class="form-group">
           <label>Anteckningar (valfritt)</label>
-          <textarea id="f-notes" placeholder="t.ex. SUV, har lite rost…"></textarea>
+          <textarea id="f-notes" placeholder="t.ex. extra smuts på hjulhusen…"></textarea>
+        </div>
+        <div class="cancel-notice">
+          ⏰ <strong>Avbokningspolicy:</strong> Avbokning måste göras minst <strong>1 timme</strong> innan bokad tid. Du får ett SMS med bokningsbekräftelse direkt efter bokning.
         </div>
         <button class="form-submit" id="submit-btn" onclick="submitBooking()">
           Bekräfta bokning
@@ -1034,9 +1059,8 @@ let slotsCache = {};
 let adminEditSlots = [];
 
 // ── AUTH STATE ─────────────────────────────────────────────────────────────
-// Persisted to localStorage
 let authState = {
-  mode: null,       // 'user' | 'guest' | null
+  mode: null,
   userId: null,
   email: null,
   guestToken: null
@@ -1047,14 +1071,10 @@ function loadAuthState() {
     const raw = localStorage.getItem('lb_auth');
     if (raw) authState = JSON.parse(raw);
   } catch(e) {}
-  // Always ensure a guest token exists for this device
   if (!authState.guestToken) {
     authState.guestToken = 'GT' + Math.random().toString(36).slice(2) + Date.now().toString(36);
   }
-  // Guest is the default — no login required to use the site
-  if (!authState.mode) {
-    authState.mode = 'guest';
-  }
+  if (!authState.mode) authState.mode = 'guest';
   saveAuthState();
 }
 
@@ -1070,7 +1090,6 @@ function updateNavAuth() {
     btn.onclick = openMyBookings;
     btn.title = authState.email;
   } else {
-    // Guest (default) — show bookings icon + label
     btn.innerHTML = `<span class="auth-icon">📋</span> <span>Mina bokningar</span>`;
     btn.onclick = openMyBookings;
     btn.title = 'Se dina bokningar eller logga in';
@@ -1087,7 +1106,6 @@ function closeModal(id) {
   document.body.style.overflow = '';
 }
 
-// Close on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', e => {
     if (e.target === overlay) closeModal(overlay.id);
@@ -1097,7 +1115,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ── AUTH MODAL ─────────────────────────────────────────────────────────────
 function openAuthModal(tab) {
   clearAuthError();
-  // Default to login tab, but accept 'register' to jump straight there
   if (tab === 'register') {
     document.querySelectorAll('#auth-tabs .modal-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('#auth-tabs .modal-tab')[1].classList.add('active');
@@ -1196,14 +1213,6 @@ async function doRegister() {
   }
 }
 
-function continueAsGuest() {
-  authState.mode = 'guest';
-  saveAuthState();
-  updateNavAuth();
-  closeModal('auth-modal');
-  toast('Fortsätter som gäst — dina bokningar sparas på denna enhet.');
-}
-
 function logout() {
   authState.mode = 'guest';
   authState.userId = null;
@@ -1260,6 +1269,10 @@ async function loadMyBookings() {
     const today = new Date().toISOString().slice(0,10);
     list.innerHTML = bookings.map(b => {
       const isPast = b.date < today;
+      const canCancel = b.can_cancel && !isPast;
+      const vehicleTag = b.vehicle_type
+        ? `<span class="my-booking-vehicle">🚗 ${escHtml(b.vehicle_type)}</span>`
+        : '';
       return `<div class="my-booking-card" style="${isPast?'opacity:0.6;':''}">
         <div class="my-booking-info">
           <div class="my-booking-date">${formatDateLabel(b.date)} kl ${b.time}</div>
@@ -1267,11 +1280,16 @@ async function loadMyBookings() {
             <span>📍 ${escHtml(b.address)}</span>
             ${b.district ? `<span>· ${escHtml(b.district)}</span>` : ''}
           </div>
-          <span class="my-booking-service">${escHtml(b.service)}</span>
+          <span class="my-booking-service">${escHtml(b.service)}</span>${vehicleTag}
           ${b.notes ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:4px;font-style:italic;">"${escHtml(b.notes)}"</div>` : ''}
           <div style="font-size:0.68rem;color:var(--muted-2);font-family:monospace;margin-top:4px;">${b.id}</div>
         </div>
-        ${!isPast ? `<button class="my-booking-delete" onclick="cancelMyBooking('${b.id.replace(/'/g,"\\'")}')">Avboka</button>` : '<span style="font-size:0.75rem;color:var(--muted-2);">Klar</span>'}
+        ${canCancel
+          ? `<button class="my-booking-delete" onclick="cancelMyBooking('${b.id.replace(/'/g,"\\'")}')">Avboka</button>`
+          : isPast
+            ? '<span style="font-size:0.75rem;color:var(--muted-2);">Klar</span>'
+            : '<span style="font-size:0.72rem;color:var(--muted-2);text-align:right;line-height:1.4;">Kan ej<br>avbokas</span>'
+        }
       </div>`;
     }).join('');
   } catch(e) {
@@ -1432,19 +1450,25 @@ function updateSummary() {
 }
 
 async function submitBooking() {
-  const name = document.getElementById('f-name').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
+  const name    = document.getElementById('f-name').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
   const address = document.getElementById('f-address').value.trim();
+  const vehicle = document.getElementById('f-vehicle').value;
   const service = document.getElementById('f-service').value;
-  const notes = document.getElementById('f-notes').value.trim();
+  const notes   = document.getElementById('f-notes').value.trim();
 
   if (!selectedDate || !selectedTime) { toast('Välj datum och tid.', 'error'); return; }
-  if (!name || !phone || !address || !service) { toast('Fyll i alla obligatoriska fält.', 'error'); return; }
+  if (!name || !phone || !address || !vehicle || !service) {
+    toast('Fyll i alla obligatoriska fält (inkl. fordonstyp).', 'error'); return;
+  }
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'Bokar…';
 
-  const payload = { name, phone, address, service, date: selectedDate, time: selectedTime, notes };
+  const payload = {
+    name, phone, address, service, vehicle_type: vehicle,
+    date: selectedDate, time: selectedTime, notes
+  };
   if (authState.mode === 'user') payload.user_id = authState.userId;
   else payload.guest_token = authState.guestToken;
 
@@ -1456,10 +1480,11 @@ async function submitBooking() {
     });
     const data = await res.json();
     if (data.success) {
-      toast(`✅ Bokning bekräftad! ID: ${data.booking_id}`);
+      toast(`✅ Bokning bekräftad! Du får ett SMS med detaljer. ID: ${data.booking_id}`);
       document.getElementById('f-name').value='';
       document.getElementById('f-phone').value='';
       document.getElementById('f-address').value='';
+      document.getElementById('f-vehicle').value='';
       document.getElementById('f-service').value='';
       document.getElementById('f-notes').value='';
       selectedDate = null; selectedTime = null; selectedDistrict = '';
@@ -1629,7 +1654,7 @@ function renderGroupedBookings() {
   let filtered = allBookings.filter(b => {
     if (filterDate && b.date !== filterDate) return false;
     if (search) {
-      const haystack = `${b.name} ${b.phone} ${b.address} ${b.district} ${b.service}`.toLowerCase();
+      const haystack = `${b.name} ${b.phone} ${b.address} ${b.district} ${b.service} ${b.vehicle_type}`.toLowerCase();
       if (!haystack.includes(search)) return false;
     }
     return true;
@@ -1670,6 +1695,9 @@ function renderGroupedBookings() {
         : b.guest_token
           ? `<span style="font-size:0.68rem;color:rgba(160,160,200,0.7);background:rgba(160,160,200,0.08);border-radius:4px;padding:1px 6px;">gäst</span>`
           : '';
+      const vehicleTag = b.vehicle_type
+        ? `<span class="booking-vehicle-tag">🚗 ${escHtml(b.vehicle_type)}</span>`
+        : '';
       return `
         <div class="booking-card">
           <div class="booking-card-time">
@@ -1682,7 +1710,9 @@ function renderGroupedBookings() {
               <span>📞 ${escHtml(b.phone)}</span>
               <span>📍 ${escHtml(b.address || '—')}</span>
             </div>
-            <div class="booking-service-tag">${escHtml(b.service)}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0;">
+              <div class="booking-service-tag">${escHtml(b.service)}</div>${vehicleTag}
+            </div>
             ${b.notes ? `<div class="booking-card-notes">"${escHtml(b.notes)}"</div>` : ''}
             <div class="booking-card-id">${b.id}</div>
           </div>
